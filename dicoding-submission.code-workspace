@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "🏠",
+		},
+		{
+			"path": "./bookshelf-api",
+			"name": "👉 Bookshelf API",
+		},
+	],
+	"settings": {}
+}
