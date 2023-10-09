@@ -17,6 +17,7 @@ export const createServer = async () => {
 
   await server.start();
 
+  // eslint-disable-next-line no-console
   console.log('Server running on %s', server.info.uri);
 
   return server;

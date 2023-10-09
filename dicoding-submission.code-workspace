@@ -9,5 +9,9 @@
 			"name": "👉 Bookshelf API",
 		},
 	],
-	"settings": {}
+	"settings": {
+		"conventionalCommits.scopes": [
+			"bookshelf-api"
+		]
+	}
 }

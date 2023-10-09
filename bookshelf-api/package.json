@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "lint": "eslint ./src --fix",
     "start": "node ./src/index.mjs",
-    "dev": "nodemon ./src/index.mjs"
+    "dev": "nodemon ./src/index.mjs",
+    "lint": "eslint --ext .mjs ./src --fix"
   },
   "dependencies": {
     "@hapi/hapi": "^21.3.2",
