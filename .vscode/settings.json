@@ -6,6 +6,6 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "{bookshelf-api}/**": true,
+    "{bookshelf-api,open-music-api}/**": true,
   },
 }

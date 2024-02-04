@@ -1,0 +1,22 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "migrate": "node-pg-migrate",
+    "lint": "eslint --ext .mjs ./src --fix"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.3.3",
+    "dotenv": "^16.4.1",
+    "joi": "^17.12.1",
+    "node-pg-migrate": "^6.2.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "nodemon": "^3.0.3"
+  }
+}

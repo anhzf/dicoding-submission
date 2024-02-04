@@ -1,17 +1,22 @@
 {
-	"folders": [
-		{
-			"path": ".",
-			"name": "🏠",
-		},
-		{
-			"path": "./bookshelf-api",
-			"name": "👉 Bookshelf API",
-		},
-	],
-	"settings": {
-		"conventionalCommits.scopes": [
-			"bookshelf-api"
-		]
-	}
+  "folders": [
+    {
+      "path": ".",
+      "name": "🏠",
+    },
+    {
+      "path": "./bookshelf-api",
+      "name": "👉 Bookshelf API",
+    },
+    {
+      "path": "./open-music-api",
+      "name": "👉 Open Music API",
+    },
+  ],
+  "settings": {
+    "conventionalCommits.scopes": [
+      "bookshelf-api",
+      "open-music-api",
+    ]
+  }
 }
