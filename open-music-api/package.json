@@ -9,9 +9,10 @@
   "dependencies": {
     "@hapi/hapi": "^21.3.3",
     "dotenv": "^16.4.1",
-    "joi": "^17.12.1",
+    "nanoid": "^5.0.5",
     "node-pg-migrate": "^6.2.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "valibot": "^0.27.1"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
