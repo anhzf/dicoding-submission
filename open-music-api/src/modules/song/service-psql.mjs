@@ -1,17 +1,12 @@
-import { Pool } from 'pg';
+import pg from 'pg';
 import { parse } from 'valibot';
-import config from '../config.mjs';
-import NotFoundError from '../errors/not-found.mjs';
-import { SongSchema } from '../schemas.mjs';
+import config from '../../config.mjs';
+import NotFoundError from '../../errors/not-found.mjs';
+import { SongDetailSchema, SongSchema } from './schema.mjs';
 
-/**
- * @typedef {{
- *  title?: string;
- *  performer?: string;
- * }} SongQuery
- */
+const { Pool } = pg;
 
-export default class SongService {
+export default class SongPsqlService {
   static #TABLE_NAME = 'songs';
 
   constructor() {
@@ -28,18 +23,18 @@ export default class SongService {
    * @param {string} id
    */
   async get(id) {
-    const result = await this._pool.query(`SELECT * FROM ${SongService.#TABLE_NAME} WHERE id = $1`, [id]);
+    const result = await this._pool.query(`SELECT * FROM ${SongPsqlService.#TABLE_NAME} WHERE id = $1`, [id]);
     const [item] = result.rows;
 
-    if (!item) throw new NotFoundError('Lagu tidak ditemukan');
+    if (!item) throw new NotFoundError('Song tidak ditemukan');
 
-    return parse(SongSchema, item);
+    return parse(SongDetailSchema, item);
   }
 
   /**
-   * @param {SongQuery} query
+   * @param {import('./types').SongQuery} query
    */
-  async list(query = {}) {
+  async list(query) {
     const { title, performer } = query;
     const conditions = [];
     const values = [];
@@ -54,8 +49,9 @@ export default class SongService {
       values.push(`%${performer}%`);
     }
 
+    const columns = Object.keys(SongSchema.entries);
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-    const result = await this._pool.query(`SELECT * FROM ${SongService.#TABLE_NAME} ${whereClause}`, values);
+    const result = await this._pool.query(`SELECT ${columns.join(',')} FROM ${SongPsqlService.#TABLE_NAME} ${whereClause}`, values);
     return result.rows.map((item) => parse(SongSchema, item));
   }
 
@@ -65,14 +61,10 @@ export default class SongService {
    */
   async create(payload) {
     const parsed = parse(SongSchema, payload);
-    const result = await this._pool.query(`INSERT INTO ${SongService.#TABLE_NAME} VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`, [
+    const result = await this._pool.query(`INSERT INTO ${SongPsqlService.#TABLE_NAME} VALUES($1, $2, $3) RETURNING id`, [
       parsed.id,
       parsed.title,
       parsed.year,
-      parsed.performer,
-      parsed.genre,
-      parsed.duration,
-      parsed.albumId,
     ]);
 
     return result.rows[0].id;
@@ -84,18 +76,21 @@ export default class SongService {
    */
   async update(payload) {
     const parsed = parse(SongSchema, payload);
-    const result = await this._pool.query(`UPDATE ${SongService.#TABLE_NAME} SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, albumId = $6 WHERE id = $7 RETURNING id`, [
+    const result = await this._pool.query(`UPDATE ${SongPsqlService.#TABLE_NAME} SET title = $1, year = $2 WHERE id = $3 RETURNING id`, [
       parsed.title,
       parsed.year,
-      parsed.performer,
-      parsed.genre,
-      parsed.duration,
-      parsed.albumId,
       parsed.id,
     ]);
 
-    if (!result.rows.length) throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
-
     return result.rows[0].id;
+  }
+
+  /**
+   * @param {string} id
+   */
+  async destroy(id) {
+    const result = await this._pool.query(`DELETE FROM ${SongPsqlService.#TABLE_NAME} WHERE id = $1`, [id]);
+
+    if (!result.rowCount) throw new NotFoundError('Song tidak ditemukan');
   }
 }

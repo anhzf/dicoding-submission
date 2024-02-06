@@ -1,8 +1,7 @@
 {
-  "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node src/index.mjs",
+    "dev": "nodemon src/index.mjs",
     "migrate": "node-pg-migrate",
     "lint": "eslint --ext .mjs ./src --fix"
   },
@@ -12,7 +11,7 @@
     "nanoid": "^5.0.5",
     "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.3",
-    "valibot": "^0.27.1"
+    "valibot": "^0.28.0"
   },
   "devDependencies": {
     "eslint": "^8.56.0",

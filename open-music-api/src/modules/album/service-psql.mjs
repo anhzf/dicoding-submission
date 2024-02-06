@@ -1,10 +1,12 @@
-import { Pool } from 'pg';
+import pg from 'pg';
 import { parse } from 'valibot';
-import config from '../config.mjs';
-import NotFoundError from '../errors/not-found.mjs';
-import { AlbumSchema } from '../schemas.mjs';
+import config from '../../config.mjs';
+import NotFoundError from '../../errors/not-found.mjs';
+import { AlbumSchema } from './schema.mjs';
 
-export default class AlbumService {
+const { Pool } = pg;
+
+export default class AlbumPsqlService {
   static #TABLE_NAME = 'albums';
 
   constructor() {
@@ -21,7 +23,7 @@ export default class AlbumService {
    * @param {string} id
    */
   async get(id) {
-    const result = await this._pool.query(`SELECT * FROM ${AlbumService.#TABLE_NAME} WHERE id = $1`, [id]);
+    const result = await this._pool.query(`SELECT * FROM ${AlbumPsqlService.#TABLE_NAME} WHERE id = $1`, [id]);
     const [item] = result.rows;
 
     if (!item) throw new NotFoundError('Album tidak ditemukan');
@@ -30,7 +32,7 @@ export default class AlbumService {
   }
 
   async list() {
-    const result = await this._pool.query(`SELECT * FROM ${AlbumService.#TABLE_NAME}`);
+    const result = await this._pool.query(`SELECT * FROM ${AlbumPsqlService.#TABLE_NAME}`);
     return result.rows.map((item) => parse(AlbumSchema, item));
   }
 
@@ -40,7 +42,7 @@ export default class AlbumService {
    */
   async create(payload) {
     const parsed = parse(AlbumSchema, payload);
-    const result = await this._pool.query(`INSERT INTO ${AlbumService.#TABLE_NAME} VALUES($1, $2, $3) RETURNING id`, [
+    const result = await this._pool.query(`INSERT INTO ${AlbumPsqlService.#TABLE_NAME} VALUES($1, $2, $3) RETURNING id`, [
       parsed.id,
       parsed.name,
       parsed.year,
@@ -55,7 +57,7 @@ export default class AlbumService {
    */
   async update(payload) {
     const parsed = parse(AlbumSchema, payload);
-    const result = await this._pool.query(`UPDATE ${AlbumService.#TABLE_NAME} SET name = $1, year = $2 WHERE id = $3 RETURNING id`, [
+    const result = await this._pool.query(`UPDATE ${AlbumPsqlService.#TABLE_NAME} SET name = $1, year = $2 WHERE id = $3 RETURNING id`, [
       parsed.name,
       parsed.year,
       parsed.id,
@@ -64,5 +66,10 @@ export default class AlbumService {
     if (!result.rowCount) throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
 
     return result.rows[0].id;
+  }
+
+  async delete(id) {
+    const result = await this._pool.query(`DELETE FROM ${AlbumPsqlService.#TABLE_NAME} WHERE id = $1`, [id]);
+    if (!result.rowCount) throw new NotFoundError('Album gagal dihapus. Id tidak ditemukan');
   }
 }
