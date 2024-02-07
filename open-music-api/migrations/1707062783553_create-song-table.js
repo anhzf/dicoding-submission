@@ -29,11 +29,11 @@ exports.up = (pgm) => {
       type: 'INT',
       notNull: false,
     },
-    albumId: {
+    album_id: {
       type: 'VARCHAR(50)',
-      notNull: true,
+      notNull: false,
       references: 'albums',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
     },
   });
 };

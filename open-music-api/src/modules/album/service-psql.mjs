@@ -2,7 +2,7 @@ import pg from 'pg';
 import { parse } from 'valibot';
 import config from '../../config.mjs';
 import NotFoundError from '../../errors/not-found.mjs';
-import { AlbumSchema } from './schema.mjs';
+import { AlbumExpandedSchema, AlbumPayloadSchema, AlbumSchema } from './schema.mjs';
 
 const { Pool } = pg;
 
@@ -28,7 +28,7 @@ export default class AlbumPsqlService {
 
     if (!item) throw new NotFoundError('Album tidak ditemukan');
 
-    return parse(AlbumSchema, item);
+    return parse(AlbumExpandedSchema, item);
   }
 
   async list() {
@@ -38,30 +38,35 @@ export default class AlbumPsqlService {
 
   /**
    *
-   * @param {Omit<import('valibot').Input<typeof AlbumSchema>, 'id'>} payload
+   * @param {import('valibot').Output<typeof AlbumPayloadSchema>} payload
    */
   async create(payload) {
-    const parsed = parse(AlbumSchema, payload);
-    const result = await this._pool.query(`INSERT INTO ${AlbumPsqlService.#TABLE_NAME} VALUES($1, $2, $3) RETURNING id`, [
-      parsed.id,
-      parsed.name,
-      parsed.year,
-    ]);
+    const data = { ...payload, id: AlbumSchema.entries.id.default() };
+    const cols = Object.keys(AlbumPayloadSchema.entries).concat('id');
+    const colsBind = cols.map((_, i) => `$${i + 1}`).join();
+    const values = cols.map((col) => data[col]);
+
+    const result = await this._pool.query(
+      `INSERT INTO ${AlbumPsqlService.#TABLE_NAME} (${cols.join()}) VALUES(${colsBind}) RETURNING id`,
+      values,
+    );
 
     return result.rows[0].id;
   }
 
   /**
    *
-   * @param {import('valibot').Input<typeof AlbumSchema>} payload
+   * @param {import('valibot').Output<typeof AlbumPayloadSchema> & {id: string}} payload
    */
-  async update(payload) {
-    const parsed = parse(AlbumSchema, payload);
-    const result = await this._pool.query(`UPDATE ${AlbumPsqlService.#TABLE_NAME} SET name = $1, year = $2 WHERE id = $3 RETURNING id`, [
-      parsed.name,
-      parsed.year,
-      parsed.id,
-    ]);
+  async update({ id, ...payload }) {
+    const cols = Object.keys(AlbumPayloadSchema.entries);
+    const colsBind = cols.map((col, i) => `${col} = $${i + 1}`).join();
+    const values = cols.map((col) => payload[col]).concat(id);
+
+    const result = await this._pool.query(
+      `UPDATE ${AlbumPsqlService.#TABLE_NAME} SET ${colsBind} WHERE id = $${cols.length + 1} RETURNING id`,
+      values,
+    );
 
     if (!result.rowCount) throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
 

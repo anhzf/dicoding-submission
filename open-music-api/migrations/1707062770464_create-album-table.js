@@ -16,7 +16,7 @@ exports.up = (pgm) => {
     year: {
       type: 'INT',
       notNull: true,
-    }
+    },
   });
 };
 

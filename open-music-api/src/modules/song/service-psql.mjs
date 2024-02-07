@@ -2,7 +2,9 @@ import pg from 'pg';
 import { parse } from 'valibot';
 import config from '../../config.mjs';
 import NotFoundError from '../../errors/not-found.mjs';
-import { SongDetailSchema, SongSchema } from './schema.mjs';
+import {
+  SongDetailSchema, SongPayloadSchema, SongSchema, modelToSourceKeys, sourceToModelKeys,
+} from './schema.mjs';
 
 const { Pool } = pg;
 
@@ -35,52 +37,68 @@ export default class SongPsqlService {
    * @param {import('./types').SongQuery} query
    */
   async list(query) {
-    const { title, performer } = query;
+    const { title, performer, albumId } = query || {};
     const conditions = [];
     const values = [];
 
     if (title) {
-      conditions.push(`title LIKE $${values.length + 1}`);
-      values.push(`%${title}%`);
+      conditions.push(`${modelToSourceKeys.title} ILIKE $${values.length + 1}`);
+      values.push(`${title}%`);
     }
 
     if (performer) {
-      conditions.push(`performer LIKE $${values.length + 1}`);
-      values.push(`%${performer}%`);
+      conditions.push(`${modelToSourceKeys.performer} ILIKE $${values.length + 1}`);
+      values.push(`${performer}%`);
+    }
+
+    if (albumId) {
+      conditions.push(`${modelToSourceKeys.albumId} = $${values.length + 1}`);
+      values.push(albumId);
     }
 
     const columns = Object.keys(SongSchema.entries);
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-    const result = await this._pool.query(`SELECT ${columns.join(',')} FROM ${SongPsqlService.#TABLE_NAME} ${whereClause}`, values);
+    const q = `SELECT ${columns.join()} FROM ${SongPsqlService.#TABLE_NAME} ${whereClause}`;
+    const result = await this._pool.query(q, values);
+
     return result.rows.map((item) => parse(SongSchema, item));
   }
 
   /**
    *
-   * @param {Omit<import('valibot').Input<typeof SongSchema>, 'id'>} payload
+   * @param {Omit<import('valibot').Output<typeof SongDetailSchema>, 'id'>} payload
    */
   async create(payload) {
-    const parsed = parse(SongSchema, payload);
-    const result = await this._pool.query(`INSERT INTO ${SongPsqlService.#TABLE_NAME} VALUES($1, $2, $3) RETURNING id`, [
-      parsed.id,
-      parsed.title,
-      parsed.year,
-    ]);
+    const data = { ...payload, id: SongSchema.entries.id.default() };
+    const cols = Object.keys(SongPayloadSchema.entries).concat('id')
+      .map((key) => modelToSourceKeys[key]);
+    const colsBind = cols.map((_, i) => `$${i + 1}`).join();
+    const values = cols.map((col) => data[sourceToModelKeys[col] || col]);
+
+    const result = await this._pool.query(
+      `INSERT INTO ${SongPsqlService.#TABLE_NAME} (${cols.join()}) VALUES(${colsBind}) RETURNING id`,
+      values,
+    );
 
     return result.rows[0].id;
   }
 
   /**
    *
-   * @param {import('valibot').Input<typeof SongSchema>} payload
+   * @param {Omit<import('valibot').Output<typeof SongDetailSchema>, 'id'>} payload
    */
-  async update(payload) {
-    const parsed = parse(SongSchema, payload);
-    const result = await this._pool.query(`UPDATE ${SongPsqlService.#TABLE_NAME} SET title = $1, year = $2 WHERE id = $3 RETURNING id`, [
-      parsed.title,
-      parsed.year,
-      parsed.id,
-    ]);
+  async update({ id, ...payload }) {
+    const cols = Object.keys(SongPayloadSchema.entries)
+      .map((key) => modelToSourceKeys[key]);
+    const colsBind = cols.map((col, i) => `${col} = $${i + 1}`).join();
+    const values = cols.map((col) => payload[sourceToModelKeys[col] || col]).concat(id);
+
+    const result = await this._pool.query(
+      `UPDATE ${SongPsqlService.#TABLE_NAME} SET ${colsBind} WHERE id = $${cols.length + 1} RETURNING id`,
+      values,
+    );
+
+    if (!result.rowCount) throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
 
     return result.rows[0].id;
   }
@@ -88,7 +106,7 @@ export default class SongPsqlService {
   /**
    * @param {string} id
    */
-  async destroy(id) {
+  async delete(id) {
     const result = await this._pool.query(`DELETE FROM ${SongPsqlService.#TABLE_NAME} WHERE id = $1`, [id]);
 
     if (!result.rowCount) throw new NotFoundError('Song tidak ditemukan');

@@ -1,4 +1,5 @@
 import Hapi from '@hapi/hapi';
+import { consola } from 'consola';
 import config from './config.mjs';
 import { AlbumPlugin, AlbumPsqlService } from './modules/album/index.mjs';
 import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
@@ -14,24 +15,25 @@ export const createServer = async () => {
     },
   });
 
-  await server.register({
+  const albumService = new AlbumPsqlService();
+  const songService = new SongPsqlService();
+
+  await server.register([{
     plugin: AlbumPlugin,
     options: {
-      service: new AlbumPsqlService(),
+      service: albumService,
+      songService,
     },
-  });
-
-  await server.register({
+  }, {
     plugin: SongPlugin,
     options: {
-      service: new SongPsqlService(),
+      service: songService,
     },
-  });
+  }]);
 
   await server.start();
 
-  // eslint-disable-next-line no-console
-  console.log('Server running on %s', server.info.uri);
+  consola.box('Server running on %s', server.info.uri);
 
   return server;
 };
