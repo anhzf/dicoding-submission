@@ -1,20 +1,10 @@
-/* eslint-disable camelcase */
-
-const TABLE_NAME = 'albums';
+const TABLE_NAME = 'refresh_tokens';
 
 /** @param pgm {import('node-pg-migrate').MigrationBuilder}  */
 exports.up = (pgm) => {
   pgm.createTable(TABLE_NAME, {
-    id: {
-      type: 'VARCHAR(50)',
-      primaryKey: true,
-    },
-    name: {
+    token: {
       type: 'TEXT',
-      notNull: true,
-    },
-    year: {
-      type: 'INT',
       notNull: true,
     },
   });

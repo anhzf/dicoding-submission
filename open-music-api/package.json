@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "@hapi/hapi": "^21.3.3",
+    "@hapi/jwt": "^3.2.0",
+    "bcrypt": "^5.1.1",
     "consola": "^3.2.3",
     "dotenv": "^16.4.1",
     "nanoid": "^5.0.5",
@@ -15,6 +17,7 @@
     "valibot": "^0.28.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",

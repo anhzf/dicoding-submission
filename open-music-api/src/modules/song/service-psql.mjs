@@ -1,24 +1,15 @@
-import pg from 'pg';
 import { parse } from 'valibot';
-import config from '../../config.mjs';
 import NotFoundError from '../../errors/not-found.mjs';
+import { getPool } from '../../utils/db.mjs';
 import {
   SongDetailSchema, SongPayloadSchema, SongSchema, modelToSourceKeys, sourceToModelKeys,
 } from './schema.mjs';
-
-const { Pool } = pg;
 
 export default class SongPsqlService {
   static #TABLE_NAME = 'songs';
 
   constructor() {
-    this._pool = new Pool({
-      host: config.pg.host,
-      port: config.pg.port,
-      user: config.pg.user,
-      password: config.pg.password,
-      database: config.pg.database,
-    });
+    this._pool = getPool();
   }
 
   /**

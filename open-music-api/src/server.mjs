@@ -1,7 +1,11 @@
 import Hapi from '@hapi/hapi';
+import { plugin as JwtPlugin } from '@hapi/jwt';
 import config from './config.mjs';
 import { AlbumPlugin, AlbumPsqlService } from './modules/album/index.mjs';
+import { AuthPlugin, AuthPsqlService } from './modules/auth/index.mjs';
 import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
+import { TokenManager } from './modules/tokenize/index.mjs';
+import { UserPlugin, UserPsqlService } from './modules/user/index.mjs';
 import { consola } from './utils/terminal.mjs';
 
 export const createServer = async () => {
@@ -15,8 +19,30 @@ export const createServer = async () => {
     },
   });
 
+  await server.register([
+    { plugin: JwtPlugin },
+  ]);
+
+  server.auth.strategy('default', 'jwt', {
+    keys: config.accessTokenKey,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: config.tokenMaxAge,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
   const albumService = new AlbumPsqlService();
   const songService = new SongPsqlService();
+  const userService = new UserPsqlService();
+  const authService = new AuthPsqlService();
 
   await server.register([{
     plugin: AlbumPlugin,
@@ -28,6 +54,18 @@ export const createServer = async () => {
     plugin: SongPlugin,
     options: {
       service: songService,
+    },
+  }, {
+    plugin: UserPlugin,
+    options: {
+      service: userService,
+    },
+  }, {
+    plugin: AuthPlugin,
+    options: {
+      service: authService,
+      userService,
+      tokenManager: TokenManager,
     },
   }]);
 
