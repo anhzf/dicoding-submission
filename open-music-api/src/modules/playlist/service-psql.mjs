@@ -1,15 +1,20 @@
 // @ts-check
 import { parse } from 'valibot';
 import AuthorizationError from '../../errors/authorization.mjs';
+import NotFoundError from '../../errors/not-found.mjs';
 import { getPool } from '../../utils/db.mjs';
 import { swapValuesToKeys } from '../../utils/object.mjs';
 import { SongSchema } from '../song/schema.mjs';
-import { PlaylistPayloadSchema, PlaylistSchema, PlaylistSongSchema } from './schema.mjs';
-import NotFoundError from '../../errors/not-found.mjs';
+import {
+  PlaylistActivityItemSchema,
+  PlaylistActivityPayloadSchema, PlaylistActivitySchema,
+  PlaylistPayloadSchema, PlaylistSchema, PlaylistSongSchema,
+} from './schema.mjs';
 
 /**
  * @typedef {import('./types').PlaylistService} Service
  * @typedef {import('valibot').Output<typeof PlaylistPayloadSchema>} PlaylistPayload
+ * @typedef {import('valibot').Output<typeof PlaylistActivityPayloadSchema>} ActivityPayload
  * @typedef {import('pg').QueryConfig} QueryConfig
  * @typedef {import('../playlist-collaborations/types').PlaylistCollaborationService} CollaborationService
  */
@@ -21,6 +26,15 @@ const PlaylistSongSourceToModelKeys = {
 };
 
 const PlaylistSongModelToSourceKeys = swapValuesToKeys(PlaylistSongSourceToModelKeys);
+
+const ActivitySourceToModelKeys = {
+  ...Object.fromEntries(Object.entries(PlaylistActivitySchema.entries).map(([k]) => [k, k])),
+  playlist_id: 'playlistId',
+  user_id: 'userId',
+  song_id: 'songId',
+};
+
+const ActivityModelToSourceKeys = swapValuesToKeys(ActivitySourceToModelKeys);
 
 /** @implements {Service} */
 export default class PlaylistPsqlService {
@@ -168,6 +182,51 @@ export default class PlaylistPsqlService {
       values: [playlistId, songId],
     };
     await this.#pool.query(query);
+  }
+
+  /**
+   * @param {ActivityPayload} payload
+   */
+  async addActivity(payload) {
+    const data = {
+      ...payload,
+      time: PlaylistActivitySchema.entries.time.default(),
+      id: PlaylistActivitySchema.entries.id.default(),
+    };
+
+    const cols = Object.keys(PlaylistActivityPayloadSchema.entries).concat('id')
+      .map((col) => ActivityModelToSourceKeys[col] || col);
+    const colBinds = cols.map((_, i) => `$${i + 1}`);
+
+    /** @satisfies {QueryConfig} */
+    const query = {
+      text: `INSERT INTO playlist_activities (${cols.join()}) VALUES (${colBinds.join()}) RETURNING id`,
+      values: cols.map((col) => data[ActivitySourceToModelKeys[col]]),
+    };
+
+    const { rows: [row] } = await this.#pool.query(query);
+
+    return row.id;
+  }
+
+  /**
+   * @param {string} id
+   */
+  async listActivities(id) {
+    /** @satisfies {QueryConfig} */
+    const query = {
+      text: `SELECT songs.title, playlist_activities.action,
+      playlist_activities.time, users.username
+      FROM playlist_activities
+      JOIN users ON playlist_activities.user_id = users.id
+      JOIN songs ON playlist_activities.song_id = songs.id
+      WHERE playlist_activities.playlist_id = $1
+      ORDER BY playlist_activities.time ASC`,
+      values: [id],
+    };
+    const { rows } = await this.#pool.query(query);
+
+    return rows.map((row) => parse(PlaylistActivityItemSchema, row));
   }
 
   /**

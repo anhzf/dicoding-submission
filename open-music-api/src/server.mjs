@@ -4,12 +4,14 @@ import config from './config.mjs';
 import ClientError from './errors/client.mjs';
 import { AlbumPlugin, AlbumPsqlService } from './modules/album/index.mjs';
 import { AuthPlugin, AuthPsqlService } from './modules/auth/index.mjs';
+import {
+  PlaylistCollaborationPlugin, PlaylistCollaborationPsqlService,
+} from './modules/playlist-collaborations/index.mjs';
 import { PlaylistPlugin, PlaylistPsqlService } from './modules/playlist/index.mjs';
 import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
 import { TokenManager } from './modules/tokenize/index.mjs';
 import { UserPlugin, UserPsqlService } from './modules/user/index.mjs';
 import { consola } from './utils/terminal.mjs';
-import { PlaylistCollaborationPsqlService } from './modules/playlist-collaborations/index.mjs';
 
 export const createServer = async () => {
   const server = Hapi.server({
@@ -76,6 +78,12 @@ export const createServer = async () => {
     plugin: PlaylistPlugin,
     options: {
       service: playlistService,
+    },
+  }, {
+    plugin: PlaylistCollaborationPlugin,
+    options: {
+      service: collaborationService,
+      playlistService,
     },
   }]);
 

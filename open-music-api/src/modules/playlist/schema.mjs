@@ -1,7 +1,11 @@
 import {
   array,
+  date,
   merge,
   object,
+  omit,
+  optional,
+  picklist,
   string,
 } from 'valibot';
 import { id } from '../../utils/schema.mjs';
@@ -30,4 +34,24 @@ export const PlaylistSongSchema = object({
 
 export const PlaylistSongPayloadSchema = object({
   songId: string(),
+});
+
+export const PlaylistActivityActionSchema = picklist(['add', 'delete']);
+
+export const PlaylistActivitySchema = object({
+  id: id('playlist-activity-'),
+  playlistId: string(),
+  songId: string(),
+  userId: string(),
+  action: PlaylistActivityActionSchema,
+  time: optional(date(), () => new Date()),
+});
+
+export const PlaylistActivityPayloadSchema = omit(PlaylistActivitySchema, ['id']);
+
+export const PlaylistActivityItemSchema = object({
+  username: string(),
+  title: string(),
+  time: date(),
+  action: PlaylistActivityActionSchema,
 });

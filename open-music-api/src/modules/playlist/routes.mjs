@@ -39,6 +39,12 @@ const playlistRoutes = (handler) => [
     handler: handler.destroySong.bind(handler),
     options: { auth: 'default' },
   },
+  {
+    method: 'GET',
+    path: '/playlists/{id}/activities',
+    handler: handler.listActivities.bind(handler),
+    options: { auth: 'default' },
+  },
 ];
 
 export default playlistRoutes;

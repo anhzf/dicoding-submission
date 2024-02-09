@@ -96,6 +96,10 @@ export default class PlaylistHandler {
     await this.#service.verifyAccess(playlistId, req.auth.credentials.id);
     await this.#service.addSong(playlistId, songId);
 
+    this.#service.addActivity({
+      action: 'add', playlistId, songId, userId: req.auth.credentials.id,
+    });
+
     return h.response({
       status: 'success',
       message: 'Lagu berhasil ditambahkan ke playlist',
@@ -113,9 +117,32 @@ export default class PlaylistHandler {
     await this.#service.verifyAccess(playlistId, req.auth.credentials.id);
     await this.#service.deleteSong(playlistId, songId);
 
+    this.#service.addActivity({
+      action: 'delete', playlistId, songId, userId: req.auth.credentials.id,
+    });
+
     return h.response({
       status: 'success',
       message: 'Lagu berhasil dihapus dari playlist',
+    });
+  }
+
+  /**
+   * @param {HRequest} req
+   * @param {HResponseToolkit} h
+   */
+  async listActivities(req, h) {
+    const { id: playlistId } = req.params;
+
+    await this.#service.verifyAccess(playlistId, req.auth.credentials.id);
+    const activities = await this.#service.listActivities(playlistId);
+
+    return h.response({
+      status: 'success',
+      data: {
+        playlistId,
+        activities,
+      },
     });
   }
 }

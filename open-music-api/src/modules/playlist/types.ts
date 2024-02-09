@@ -1,6 +1,6 @@
 import type { Output } from 'valibot';
 import type { SongSchema } from '../song/schema.mjs';
-import type { PlaylistPayloadSchema, PlaylistSchema } from './schema.mjs';
+import type { PlaylistActivityItemSchema, PlaylistActivityPayloadSchema, PlaylistPayloadSchema, PlaylistSchema } from './schema.mjs';
 
 export type OutPlaylist = Output<typeof PlaylistSchema>;
 
@@ -14,6 +14,8 @@ export interface PlaylistService {
   listSongs(id: string, userId: string): Promise<Output<typeof SongSchema>[]>;
   addSong(playlistId: string, songId: string): Promise<void>;
   deleteSong(playlistId: string, songId: string): Promise<void>;
+  addActivity(payload: Output<typeof PlaylistActivityPayloadSchema>): Promise<string>;
+  listActivities(id: string): Promise<Output<typeof PlaylistActivityItemSchema>[]>;
 }
 
 export interface PlaylistPluginOptions {
