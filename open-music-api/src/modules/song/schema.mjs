@@ -19,12 +19,3 @@ export const SongDetailSchema = object({
 export const SongPayloadSchema = omit(SongDetailSchema, ['id']);
 
 export const SongSchema = pick(SongDetailSchema, ['id', 'title', 'performer']);
-
-export const sourceToModelKeys = {
-  ...Object.fromEntries(Object.entries(SongDetailSchema.entries).map(([key]) => [key, key])),
-  album_id: 'albumId',
-};
-
-export const modelToSourceKeys = Object.fromEntries(
-  Object.entries(sourceToModelKeys).map(([key, value]) => [value, key]),
-);

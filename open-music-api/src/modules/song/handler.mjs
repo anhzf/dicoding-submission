@@ -1,21 +1,19 @@
 /**
  * @typedef {import('./types').Song} Song
  * @typedef {import('./types').SongDetail} SongDetail
- * @typedef {import('./types').SongService} SongService
+ * @typedef {import('./types').SongService} Service
  * @typedef {import('@hapi/hapi').Request} HRequest
  * @typedef {import('@hapi/hapi').ResponseToolkit} HResponseToolkit
  */
 
-import { safeParse } from 'valibot';
-import ValibotError from '../../errors/valibot.mjs';
-import { SongPayloadSchema } from './schema.mjs';
+import Validator from './validator.mjs';
 
 export default class SongHandler {
-  /** @type {SongService} */
+  /** @type {Service} */
   #service;
 
   /**
-   * @param {SongService} service
+   * @param {Service} service
    */
   constructor(service) {
     this.#service = service;
@@ -58,10 +56,9 @@ export default class SongHandler {
    * @param {HResponseToolkit} h
    */
   async post(req, h) {
-    const parseResult = safeParse(SongPayloadSchema, req.payload, { abortEarly: true });
-    if (!parseResult.success) throw new ValibotError(parseResult.issues, 400);
+    const payload = Validator.validatePayload(req.payload);
 
-    const songId = await this.#service.create(parseResult.output);
+    const songId = await this.#service.create(payload);
 
     const response = h.response({
       status: 'success',
@@ -80,12 +77,10 @@ export default class SongHandler {
    * @param {HResponseToolkit} h
    */
   async put(req) {
+    const payload = Validator.validatePayload(req.payload);
+
     const { songId } = req.params;
-
-    const parseResult = safeParse(SongPayloadSchema, req.payload, { abortEarly: true });
-    if (!parseResult.success) throw new ValibotError(parseResult.issues, 400);
-
-    await this.#service.update({ ...parseResult.output, id: songId });
+    await this.#service.update({ ...payload, id: songId });
 
     return {
       status: 'success',

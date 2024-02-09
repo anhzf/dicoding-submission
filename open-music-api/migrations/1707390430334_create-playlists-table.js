@@ -1,6 +1,4 @@
-/* eslint-disable camelcase */
-
-const TABLE_NAME = 'songs';
+const TABLE_NAME = 'playlists';
 
 /** @param pgm {import('node-pg-migrate').MigrationBuilder}  */
 exports.up = (pgm) => {
@@ -9,31 +7,13 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    title: {
+    name: {
       type: 'TEXT',
       notNull: true,
     },
-    year: {
-      type: 'INT',
-      notNull: true,
-    },
-    performer: {
+    owner: {
       type: 'TEXT',
       notNull: true,
-    },
-    genre: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    duration: {
-      type: 'INT',
-      notNull: false,
-    },
-    album_id: {
-      type: 'VARCHAR(50)',
-      notNull: false,
-      references: '"albums"',
-      onDelete: 'CASCADE',
     },
   });
 };

@@ -26,5 +26,6 @@ module.exports = {
     'import/extensions': 'off',
 
     'no-underscore-dangle': 'off',
+    'max-len': ['error', { code: 120, ignoreComments: true }],
   },
 };

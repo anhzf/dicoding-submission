@@ -6,9 +6,7 @@
  * @typedef {import('@hapi/hapi').ResponseToolkit} HResponseToolkit
  */
 
-import { safeParse } from 'valibot';
-import ValibotError from '../../errors/valibot.mjs';
-import { AlbumPayloadSchema } from './schema.mjs';
+import AlbumValidator from './validator.mjs';
 
 export default class AlbumHandler {
   /** @type {AlbumService} */
@@ -62,10 +60,9 @@ export default class AlbumHandler {
    * @param {HResponseToolkit} h
    */
   async post(req, h) {
-    const parseResult = safeParse(AlbumPayloadSchema, req.payload, { abortEarly: true });
-    if (!parseResult.success) throw new ValibotError(parseResult.issues, 400);
+    const payload = AlbumValidator.validatePayload(req.payload);
 
-    const albumId = await this.#service.create(parseResult.output);
+    const albumId = await this.#service.create(payload);
 
     const response = h.response({
       status: 'success',
@@ -84,10 +81,9 @@ export default class AlbumHandler {
    */
   async put(req) {
     const { albumId } = req.params;
-    const parseResult = safeParse(AlbumPayloadSchema, req.payload, { abortEarly: false });
-    if (!parseResult.success) throw new ValibotError(parseResult.issues, 400);
+    const payload = AlbumValidator.validatePayload(req.payload);
 
-    await this.#service.update({ ...parseResult.output, id: albumId });
+    await this.#service.update({ ...payload, id: albumId });
 
     return {
       status: 'success',
