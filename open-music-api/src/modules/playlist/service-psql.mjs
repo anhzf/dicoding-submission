@@ -16,7 +16,7 @@ import {
  * @typedef {import('valibot').Output<typeof PlaylistPayloadSchema>} PlaylistPayload
  * @typedef {import('valibot').Output<typeof PlaylistActivityPayloadSchema>} ActivityPayload
  * @typedef {import('pg').QueryConfig} QueryConfig
- * @typedef {import('../playlist-collaborations/types').PlaylistCollaborationService} CollaborationService
+ * @typedef {import('../playlist-collaboration/types').PlaylistCollaborationService} CollaborationService
  */
 
 const PlaylistSongSourceToModelKeys = {

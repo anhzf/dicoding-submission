@@ -1,12 +1,15 @@
 import Hapi from '@hapi/hapi';
+import { plugin as InertPlugin } from '@hapi/inert';
 import { plugin as JwtPlugin } from '@hapi/jwt';
 import config from './config.mjs';
 import ClientError from './errors/client.mjs';
 import { AlbumPlugin, AlbumPsqlService } from './modules/album/index.mjs';
 import { AuthPlugin, AuthPsqlService } from './modules/auth/index.mjs';
+import MessagingRabbitMqService from './modules/messaging/service-rabbitmq.mjs';
 import {
   PlaylistCollaborationPlugin, PlaylistCollaborationPsqlService,
-} from './modules/playlist-collaborations/index.mjs';
+} from './modules/playlist-collaboration/index.mjs';
+import PlaylistExportPlugin from './modules/playlist-export/plugin.mjs';
 import { PlaylistPlugin, PlaylistPsqlService } from './modules/playlist/index.mjs';
 import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
 import { TokenManager } from './modules/tokenize/index.mjs';
@@ -26,6 +29,7 @@ export const createServer = async () => {
 
   await server.register([
     { plugin: JwtPlugin },
+    { plugin: InertPlugin },
   ]);
 
   server.auth.strategy('default', 'jwt', {
@@ -50,6 +54,7 @@ export const createServer = async () => {
   const albumService = new AlbumPsqlService();
   const songService = new SongPsqlService();
   const userService = new UserPsqlService();
+  const messagingService = MessagingRabbitMqService;
 
   await server.register([{
     plugin: AuthPlugin,
@@ -84,6 +89,12 @@ export const createServer = async () => {
     options: {
       service: collaborationService,
       playlistService,
+    },
+  }, {
+    plugin: PlaylistExportPlugin,
+    options: {
+      playlistService,
+      messagingService,
     },
   }]);
 

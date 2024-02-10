@@ -12,6 +12,10 @@
       "path": "./open-music-api",
       "name": "👉 Open Music API",
     },
+    {
+      "path": "./open-music-consumer",
+      "name": "👉 Open Music Consumer",
+    },
   ],
   "settings": {
     "conventionalCommits.scopes": [

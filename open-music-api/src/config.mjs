@@ -19,7 +19,16 @@ const config = Object.freeze({
   // in seconds
   tokenMaxAge: process.env.TOKEN_MAX_AGE || 3600,
 
-  authStrategy: 'default',
+  auth: { strategy: 'default' },
+
+  rabbitMq: {
+    /** @type {string} */
+    server: process.env.RABBITMQ_SERVER,
+  },
+
+  redis: {
+    server: process.env.REDIS_SERVER,
+  },
 });
 
 export default config;
