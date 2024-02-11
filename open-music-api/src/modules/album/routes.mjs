@@ -26,6 +26,18 @@ const albumRoutes = (handler) => [
     path: `/${PLURAL}/{${SINGULAR}Id}`,
     handler: handler.destroy.bind(handler),
   },
+  {
+    method: 'POST',
+    path: `/${PLURAL}/{${SINGULAR}Id}/covers`,
+    handler: handler.postCover.bind(handler),
+    options: {
+      payload: {
+        allow: 'multipart/form-data',
+        multipart: true,
+        output: 'stream',
+      },
+    },
+  },
 ];
 
 export default albumRoutes;

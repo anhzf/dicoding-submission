@@ -7,10 +7,15 @@ const config = Object.freeze({
   port: process.env.PORT || 9000,
 
   pg: {
+    /** @type {string} */
     host: process.env.PGHOST,
+    /** @type {number} */
     port: process.env.PGPORT,
+    /** @type {string} */
     user: process.env.PGUSER,
+    /** @type {string} */
     password: process.env.PGPASSWORD,
+    /** @type {string} */
     database: process.env.PGDATABASE,
   },
 

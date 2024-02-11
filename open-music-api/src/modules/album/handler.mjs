@@ -6,7 +6,7 @@
  * @typedef {import('@hapi/hapi').ResponseToolkit} HResponseToolkit
  */
 
-import AlbumValidator from './validator.mjs';
+import Validator from './validator.mjs';
 
 export default class AlbumHandler {
   /** @type {AlbumService} */
@@ -47,6 +47,7 @@ export default class AlbumHandler {
     const album = await this.#service.get(albumId);
     const songs = await this.#songService?.list({ albumId });
     album.songs = songs;
+
     return {
       status: 'success',
       data: {
@@ -60,7 +61,7 @@ export default class AlbumHandler {
    * @param {HResponseToolkit} h
    */
   async post(req, h) {
-    const payload = AlbumValidator.validatePayload(req.payload);
+    const payload = Validator.validatePayload(req.payload);
 
     const albumId = await this.#service.create(payload);
 
@@ -81,7 +82,7 @@ export default class AlbumHandler {
    */
   async put(req) {
     const { albumId } = req.params;
-    const payload = AlbumValidator.validatePayload(req.payload);
+    const payload = Validator.validatePayload(req.payload);
 
     await this.#service.update({ ...payload, id: albumId });
 
@@ -102,5 +103,24 @@ export default class AlbumHandler {
       status: 'success',
       message: 'Album berhasil dihapus',
     };
+  }
+
+  /**
+   * @param {HRequest} req
+   * @param {HResponseToolkit} h
+   */
+  async postCover(req, h) {
+    const { albumId } = req.params;
+    /** @type {import('../../types').HapiPayloadStream} cover */
+    const file = req.payload.cover;
+
+    Validator.validateCoverHeaders(file.hapi.headers);
+
+    await this.#service.setCover(albumId, file);
+
+    return h.response({
+      status: 'success',
+      message: 'Cover berhasil diperbarui',
+    }).code(201);
   }
 }
