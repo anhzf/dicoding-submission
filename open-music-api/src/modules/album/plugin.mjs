@@ -2,10 +2,10 @@ import AlbumHandler from './handler.mjs';
 import routes from './routes.mjs';
 
 /**
- * @typedef {import('./types').AlbumPluginOptions} AlbumPluginOptions
+ * @typedef {import('./types').AlbumPluginOptions} PluginOptions
  */
 
-/** @type {import('@hapi/hapi').Plugin<AlbumPluginOptions>} */
+/** @type {import('@hapi/hapi').Plugin<PluginOptions>} */
 const AlbumPlugin = {
   name: 'album',
   version: '0.1.0',

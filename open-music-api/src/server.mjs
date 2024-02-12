@@ -15,6 +15,7 @@ import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
 import { TokenManager } from './modules/tokenize/index.mjs';
 import { UserPlugin, UserPsqlService } from './modules/user/index.mjs';
 import { consola } from './utils/terminal.mjs';
+import { StorageLocalService } from './modules/storage/index.mjs';
 
 export const createServer = async () => {
   const server = Hapi.server({
@@ -49,9 +50,10 @@ export const createServer = async () => {
   });
 
   const authService = new AuthPsqlService();
+  const storageService = new StorageLocalService();
   const collaborationService = new PlaylistCollaborationPsqlService();
   const playlistService = new PlaylistPsqlService(collaborationService);
-  const albumService = new AlbumPsqlService();
+  const albumService = new AlbumPsqlService(storageService);
   const songService = new SongPsqlService();
   const userService = new UserPsqlService();
   const messagingService = MessagingRabbitMqService;

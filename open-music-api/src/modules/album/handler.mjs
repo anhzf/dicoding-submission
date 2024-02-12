@@ -8,6 +8,11 @@
 
 import Validator from './validator.mjs';
 
+/** Satisfy the requirements */
+const GetModelKeyMapper = {
+  cover: 'coverUrl',
+};
+
 export default class AlbumHandler {
   /** @type {AlbumService} */
   #service;
@@ -48,10 +53,14 @@ export default class AlbumHandler {
     const songs = await this.#songService?.list({ albumId });
     album.songs = songs;
 
+    const mapped = Object.fromEntries(
+      Object.entries(album).map(([key, value]) => [GetModelKeyMapper[key] || key, value]),
+    );
+
     return {
       status: 'success',
       data: {
-        album,
+        album: mapped,
       },
     };
   }

@@ -91,7 +91,7 @@ export default class AlbumPsqlService {
    * @param {import('stream').Readable} file
    */
   async setCover(id, file) {
-    const uploadResult = await this.#storageService.upload(`albums/${id}`, file);
+    const uploadResult = await this.#storageService.upload(`albums/${id}`, file, { maxSize: 512000 });
 
     /** @satisfies {QueryConfig} */
     const query = {

@@ -1,13 +1,14 @@
-import type { Output } from 'valibot';
-import type { AlbumExpandedSchema, AlbumSchema } from './schema.mjs';
-import type { SongService } from './handler.mjs';
-import type { StorageService } from '../storage/types';
 import type { Readable } from 'stream';
+import type { Output } from 'valibot';
+import type { StorageService } from '../storage/types';
+import type { SongService } from './handler.mjs';
+import type { AlbumExpandedSchema, AlbumSchema } from './schema.mjs';
 
 export type Album = Output<typeof AlbumSchema>;
 
 export interface AlbumService {
-  new(storageService: StorageService): AlbumService;
+  // TODO: Type the constructor
+  // constructor(storageService: StorageService): this;
   get(id: string): Promise<Output<typeof AlbumExpandedSchema>>;
   list(): Promise<Album[]>;
   create(payload: Omit<Album, 'id'>): Promise<string>;
@@ -18,5 +19,5 @@ export interface AlbumService {
 
 export interface AlbumPluginOptions {
   service: AlbumService;
-  songService?: SongService;
+  songService: SongService;
 }

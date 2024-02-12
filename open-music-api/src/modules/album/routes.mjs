@@ -2,7 +2,7 @@ const SINGULAR = 'album';
 const PLURAL = 'albums';
 
 /**
- * @param {import('../../types').Handlers} handler
+ * @param {import('./handler.mjs').default} handler
  * @returns {import('@hapi/hapi').ServerRoute[]}
  */
 const albumRoutes = (handler) => [
