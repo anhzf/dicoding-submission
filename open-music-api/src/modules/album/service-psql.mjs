@@ -1,16 +1,17 @@
 // @ts-check
 import { parse } from 'valibot';
+import InvariantError from '../../errors/invariant.mjs';
 import NotFoundError from '../../errors/not-found.mjs';
 import { getPool } from '../../utils/db.mjs';
+import { swapValuesToKeys } from '../../utils/object.mjs';
 import {
   AlbumExpandedSchema, AlbumPayloadSchema, AlbumSchema, UserAlbumLikeSchema,
 } from './schema.mjs';
-import { swapValuesToKeys } from '../../utils/object.mjs';
-import InvariantError from '../../errors/invariant.mjs';
 
 /**
  * @typedef {import('./types').AlbumService} Service
  * @typedef {import('../storage/types').StorageService} StorageService
+ * @typedef {import('../caching/types').CacheService} CacheService
  * @typedef {import('pg').QueryConfig} QueryConfig
  */
 

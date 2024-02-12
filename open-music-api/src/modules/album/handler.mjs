@@ -1,7 +1,10 @@
+import CacheError from '../../errors/cache.mjs';
+
 /**
  * @typedef {import('./types').Album} Album
  * @typedef {import('./types').AlbumService} AlbumService
  * @typedef {import('../song/types').SongService} SongService
+ * @typedef {import('../caching/types').CacheService} CacheService
  * @typedef {import('@hapi/hapi').Request} HRequest
  * @typedef {import('@hapi/hapi').ResponseToolkit} HResponseToolkit
  */
@@ -20,13 +23,20 @@ export default class AlbumHandler {
   /** @type {SongService | undefined} */
   #songService;
 
+  /** @type {CacheService | undefined} */
+  #cacheService;
+
   /**
    * @param {AlbumService} service
-   * @param {{ songService?: SongService; }} param1
+   * @param {{
+   *  songService?: SongService;
+   *  cacheService?: CacheService;
+   * }} param1
    */
-  constructor(service, { songService }) {
+  constructor(service, { songService, cacheService }) {
     this.#service = service;
     this.#songService = songService;
+    this.#cacheService = cacheService;
   }
 
   /**
@@ -137,15 +147,37 @@ export default class AlbumHandler {
    * @param {HRequest} req
    * @param {HResponseToolkit} h
    */
-  async getLikesCount(req) {
+  async getLikesCount(req, h) {
     const { albumId } = req.params;
-    const likes = await this.#service.likesCount(albumId);
-    return {
+    /** in seconds */
+    const CACHE_LIFE_TIME = 60 * 30;
+    const headers = {};
+
+    const likes = await this.#cacheService.get(AlbumHandler.#getLikeCacheKey(albumId))
+      .then((result) => {
+        headers['X-Data-Source'] = 'cache';
+        return Number(result);
+      })
+      .catch(async (err) => {
+        if (err instanceof CacheError) {
+          const result = await this.#service.likesCount(albumId);
+
+          await this.#cacheService.set(AlbumHandler.#getLikeCacheKey(albumId), result, CACHE_LIFE_TIME);
+          return result;
+        }
+        throw err;
+      });
+
+    const response = h.response({
       status: 'success',
       data: {
         likes,
       },
-    };
+    });
+
+    Object.assign(response.headers, headers);
+
+    return response;
   }
 
   /**
@@ -157,6 +189,7 @@ export default class AlbumHandler {
     const { id: userId } = req.auth.credentials;
 
     await this.#service.like(albumId, userId);
+    await this.#cacheService.delete(AlbumHandler.#getLikeCacheKey(albumId));
 
     return h.response({
       status: 'success',
@@ -173,10 +206,18 @@ export default class AlbumHandler {
     const { id: userId } = req.auth.credentials;
 
     await this.#service.unlike(albumId, userId);
+    await this.#cacheService.delete(AlbumHandler.#getLikeCacheKey(albumId));
 
     return {
       status: 'success',
       message: 'Album berhasil diunlike',
     };
+  }
+
+  /**
+   * @param {string} albumId
+   */
+  static #getLikeCacheKey(albumId) {
+    return `album-like:${albumId}`;
   }
 }

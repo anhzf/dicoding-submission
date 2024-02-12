@@ -1,6 +1,6 @@
 import type { Readable } from 'stream';
 import type { Output } from 'valibot';
-import type { SongService } from './handler.mjs';
+import type { CacheService, SongService } from './handler.mjs';
 import type { AlbumExpandedSchema, AlbumSchema } from './schema.mjs';
 
 export type Album = Output<typeof AlbumSchema>;
@@ -22,4 +22,5 @@ export interface AlbumService {
 export interface AlbumPluginOptions {
   service: AlbumService;
   songService: SongService;
+  cacheService: CacheService;
 }
