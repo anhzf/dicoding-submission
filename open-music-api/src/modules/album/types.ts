@@ -1,6 +1,5 @@
 import type { Readable } from 'stream';
 import type { Output } from 'valibot';
-import type { StorageService } from '../storage/types';
 import type { SongService } from './handler.mjs';
 import type { AlbumExpandedSchema, AlbumSchema } from './schema.mjs';
 
@@ -15,6 +14,9 @@ export interface AlbumService {
   update(payload: Album): Promise<string>;
   delete(id: string): Promise<void>;
   setCover(id: string, image: Readable): Promise<void>;
+  like(id: string, userId: string): Promise<void>;
+  unlike(id: string, userId: string): Promise<void>;
+  likesCount(id: string): Promise<number>;
 }
 
 export interface AlbumPluginOptions {

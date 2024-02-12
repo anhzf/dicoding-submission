@@ -2,13 +2,25 @@
 import { parse } from 'valibot';
 import NotFoundError from '../../errors/not-found.mjs';
 import { getPool } from '../../utils/db.mjs';
-import { AlbumExpandedSchema, AlbumPayloadSchema, AlbumSchema } from './schema.mjs';
+import {
+  AlbumExpandedSchema, AlbumPayloadSchema, AlbumSchema, UserAlbumLikeSchema,
+} from './schema.mjs';
+import { swapValuesToKeys } from '../../utils/object.mjs';
+import InvariantError from '../../errors/invariant.mjs';
 
 /**
  * @typedef {import('./types').AlbumService} Service
  * @typedef {import('../storage/types').StorageService} StorageService
  * @typedef {import('pg').QueryConfig} QueryConfig
  */
+
+const UserAlbumLikeToSourceKeyMap = {
+  ...Object.fromEntries(Object.keys(UserAlbumLikeSchema.entries).map((key) => [key, key])),
+  userId: 'user_id',
+  albumId: 'album_id',
+};
+
+const UserAlbumLikeToModelKeyMap = swapValuesToKeys(UserAlbumLikeToSourceKeyMap);
 
 /** @implements {Service} */
 export default class AlbumPsqlService {
@@ -100,5 +112,62 @@ export default class AlbumPsqlService {
     };
 
     await this.#pool.query(query);
+  }
+
+  /**
+   * @param {string} id
+   * @param {string} userId
+   */
+  async like(id, userId) {
+    const data = { userId, albumId: id };
+    const cols = Object.keys(UserAlbumLikeSchema.entries)
+      .map((key) => UserAlbumLikeToSourceKeyMap[key] || key);
+    const colsBind = cols.map((_, i) => `$${i + 1}`).join();
+
+    /** @satisfies {QueryConfig} */
+    const query = {
+      text: `INSERT INTO user_album_likes (${cols.join()}) VALUES(${colsBind})`,
+      values: cols.map((col) => data[UserAlbumLikeToModelKeyMap[col]]),
+    };
+
+    try {
+      await this.#pool.query(query);
+    } catch (err) {
+      if (err.code === '23502') throw new NotFoundError('User tidak ditemukan');
+      if (err.code === '23503') throw new NotFoundError('Album tidak ditemukan');
+      if (err.code === '23505') throw new InvariantError('Anda sudah menyukai album ini');
+      throw err;
+    }
+  }
+
+  /**
+   * @param {string} id
+   * @param {string} userId
+   */
+  async unlike(id, userId) {
+    const data = { userId, albumId: id };
+    const cols = Object.keys(UserAlbumLikeSchema.entries)
+      .map((key) => UserAlbumLikeToSourceKeyMap[key] || key);
+    const conditions = cols.map((col, i) => `${col} = $${i + 1}`);
+
+    /** @satisfies {QueryConfig} */
+    const query = {
+      text: `DELETE FROM user_album_likes WHERE ${conditions.join(' AND ')}`,
+      values: cols.map((col) => data[UserAlbumLikeToModelKeyMap[col]]),
+    };
+
+    await this.#pool.query(query);
+  }
+
+  /**
+   * @param {string} id
+   */
+  async likesCount(id) {
+    const result = await this.#pool.query(
+      `SELECT COUNT(*) FROM user_album_likes WHERE ${UserAlbumLikeToSourceKeyMap.albumId} = $1`,
+      [id],
+    );
+
+    return Number(result.rows[0].count);
   }
 }

@@ -132,4 +132,51 @@ export default class AlbumHandler {
       message: 'Cover berhasil diperbarui',
     }).code(201);
   }
+
+  /**
+   * @param {HRequest} req
+   * @param {HResponseToolkit} h
+   */
+  async getLikesCount(req) {
+    const { albumId } = req.params;
+    const likes = await this.#service.likesCount(albumId);
+    return {
+      status: 'success',
+      data: {
+        likes,
+      },
+    };
+  }
+
+  /**
+   * @param {HRequest} req
+   * @param {HResponseToolkit} h
+   */
+  async postLike(req, h) {
+    const { albumId } = req.params;
+    const { id: userId } = req.auth.credentials;
+
+    await this.#service.like(albumId, userId);
+
+    return h.response({
+      status: 'success',
+      message: 'Album berhasil dilike',
+    }).code(201);
+  }
+
+  /**
+   * @param {HRequest} req
+   * @param {HResponseToolkit} h
+   */
+  async destroyLike(req) {
+    const { albumId } = req.params;
+    const { id: userId } = req.auth.credentials;
+
+    await this.#service.unlike(albumId, userId);
+
+    return {
+      status: 'success',
+      message: 'Album berhasil diunlike',
+    };
+  }
 }

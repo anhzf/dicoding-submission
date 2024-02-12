@@ -25,3 +25,8 @@ export const AlbumExpandedSchema = merge([AlbumSchema, object({
 export const AlbumCoverHeadersSchema = object({
   'content-type': picklist(['image/apng', 'image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/webp']),
 }, unknown());
+
+export const UserAlbumLikeSchema = object({
+  userId: string(),
+  albumId: string(),
+});

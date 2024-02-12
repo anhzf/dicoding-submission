@@ -38,6 +38,23 @@ const albumRoutes = (handler) => [
       },
     },
   },
+  {
+    method: 'GET',
+    path: `/${PLURAL}/{${SINGULAR}Id}/likes`,
+    handler: handler.getLikesCount.bind(handler),
+  },
+  {
+    method: 'POST',
+    path: `/${PLURAL}/{${SINGULAR}Id}/likes`,
+    handler: handler.postLike.bind(handler),
+    options: { auth: 'default' },
+  },
+  {
+    method: 'DELETE',
+    path: `/${PLURAL}/{${SINGULAR}Id}/likes`,
+    handler: handler.destroyLike.bind(handler),
+    options: { auth: 'default' },
+  },
 ];
 
 export default albumRoutes;
