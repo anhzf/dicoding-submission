@@ -40,9 +40,8 @@ export default class StorageLocalService {
     const path = pathResolve(this.root, ...dirs, filename);
 
     // Determine the folder paths
-    const folder = path.replace(/\\/g, '/').split('/') // Normalize path on Windows
-      .slice(0, -1).join('/')
-      .replace(/\//g, '\\');
+    const folder = path.replace(/\\/g, '/').split('/')
+      .slice(0, -1).join('/');
 
     if (!existsSync(folder)) {
       mkdirSync(folder, { recursive: true });
@@ -54,7 +53,7 @@ export default class StorageLocalService {
       stream.on('error', reject);
       file.on('error', reject);
       file.pipe(stream);
-      file.on('end', () => resolve(path.replace(this.root, '').replace(/\\/g, '/') /* relative path */));
+      file.on('end', () => resolve(path.replace(this.root, '')/* relative path */));
     });
   }
 
