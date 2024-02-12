@@ -4,7 +4,7 @@ import {
   existsSync, mkdirSync,
 } from 'fs';
 import { resolve as pathResolve } from 'path';
-import ClientError from '../../errors/client.mjs';
+import config from '../../config.mjs';
 
 /**
  * @typedef {import('./types').StorageService} Service
@@ -12,22 +12,32 @@ import ClientError from '../../errors/client.mjs';
 
 /** @implements {Service} */
 export default class StorageLocalService {
-  #root;
+  baseDir;
 
-  constructor(root = './storage') {
+  public;
+
+  get root() {
     const projectRoot = /** @type {string} */ (process.env.INIT_CWD);
-    this.#root = pathResolve(projectRoot, root);
+    return pathResolve(projectRoot, this.baseDir);
+  }
+
+  /**
+   * @param {string} baseDir relative to project root
+   * @param {string} basePublic relative to host url
+   */
+  constructor(baseDir = './storage', basePublic = '/storage') {
+    this.baseDir = baseDir;
+    this.public = basePublic;
   }
 
   /**
    * @param {string} key
    * @param {import('stream').Readable} file
-   * @param {import('./types').StorageUploadOptions} opts
    */
-  async upload(key, file, opts) {
+  async upload(key, file) {
     const [origFilename, ...dirs] = key.split('/').reverse();
     const filename = [+new Date(), origFilename].join('_');
-    const path = pathResolve(this.#root, ...dirs, filename);
+    const path = pathResolve(this.root, ...dirs, filename);
 
     // Determine the folder paths
     const folder = path.replace(/\\/g, '/').split('/') // Normalize path on Windows
@@ -40,19 +50,35 @@ export default class StorageLocalService {
 
     const stream = createWriteStream(path);
 
-    if (opts.maxSize) {
-      file.on('data', (chunk) => {
-        if (stream.bytesWritten + chunk.length > /** @type {number} */ (opts.maxSize)) {
-          file.destroy(new ClientError('File yang diunggah melebihi batas maksimum', 413));
-        }
-      });
-    }
-
     return new Promise((resolve, reject) => {
       stream.on('error', reject);
       file.on('error', reject);
       file.pipe(stream);
-      file.on('end', () => resolve(path.replace(this.#root, '').replace(/\\/g, '/') /* relative path */));
+      file.on('end', () => resolve(path.replace(this.root, '').replace(/\\/g, '/') /* relative path */));
     });
+  }
+
+  /**
+   * @param {string} key
+   */
+  getUrl(key) {
+    return new URL([this.public, key].join(''), `http://${config.host}:${config.port}`).toString();
+  }
+
+  /**
+   * @returns {import('@hapi/hapi').ServerRoute[]}
+   */
+  getRoutes() {
+    return [
+      {
+        method: 'GET',
+        path: [this.public, '{param*}'].join('/'),
+        handler: {
+          directory: {
+            path: this.root,
+          },
+        },
+      },
+    ];
   }
 }

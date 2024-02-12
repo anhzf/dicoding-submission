@@ -48,12 +48,14 @@ export default class AlbumPsqlService {
 
     if (!item) throw new NotFoundError('Album tidak ditemukan');
 
+    item.cover = item.cover && this.#storageService.getUrl(item.cover);
+
     return parse(AlbumExpandedSchema, item);
   }
 
   async list() {
     const result = await this.#pool.query(`SELECT * FROM ${AlbumPsqlService.#TABLE_NAME}`);
-    return result.rows.map((item) => parse(AlbumSchema, item));
+    return result.rows.map((item) => parse(AlbumSchema, { ...item, cover: this.#storageService.getUrl(item.cover) }));
   }
 
   /**
@@ -104,7 +106,7 @@ export default class AlbumPsqlService {
    * @param {import('stream').Readable} file
    */
   async setCover(id, file) {
-    const uploadResult = await this.#storageService.upload(`albums/${id}`, file, { maxSize: 512000 });
+    const uploadResult = await this.#storageService.upload(`albums/${id}`, file);
 
     /** @satisfies {QueryConfig} */
     const query = {

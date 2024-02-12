@@ -153,7 +153,7 @@ export default class AlbumHandler {
     const CACHE_LIFE_TIME = 60 * 30;
     const headers = {};
 
-    const likes = await this.#cacheService.get(AlbumHandler.#getLikeCacheKey(albumId))
+    const likes = await this.#cacheService.get(AlbumHandler.#getLikesCacheKey(albumId))
       .then((result) => {
         headers['X-Data-Source'] = 'cache';
         return Number(result);
@@ -162,7 +162,7 @@ export default class AlbumHandler {
         if (err instanceof CacheError) {
           const result = await this.#service.likesCount(albumId);
 
-          await this.#cacheService.set(AlbumHandler.#getLikeCacheKey(albumId), result, CACHE_LIFE_TIME);
+          await this.#cacheService.set(AlbumHandler.#getLikesCacheKey(albumId), result, CACHE_LIFE_TIME);
           return result;
         }
         throw err;
@@ -189,7 +189,7 @@ export default class AlbumHandler {
     const { id: userId } = req.auth.credentials;
 
     await this.#service.like(albumId, userId);
-    await this.#cacheService.delete(AlbumHandler.#getLikeCacheKey(albumId));
+    await this.#cacheService.delete(AlbumHandler.#getLikesCacheKey(albumId));
 
     return h.response({
       status: 'success',
@@ -206,7 +206,7 @@ export default class AlbumHandler {
     const { id: userId } = req.auth.credentials;
 
     await this.#service.unlike(albumId, userId);
-    await this.#cacheService.delete(AlbumHandler.#getLikeCacheKey(albumId));
+    await this.#cacheService.delete(AlbumHandler.#getLikesCacheKey(albumId));
 
     return {
       status: 'success',
@@ -217,7 +217,7 @@ export default class AlbumHandler {
   /**
    * @param {string} albumId
    */
-  static #getLikeCacheKey(albumId) {
+  static #getLikesCacheKey(albumId) {
     return `album-like:${albumId}`;
   }
 }

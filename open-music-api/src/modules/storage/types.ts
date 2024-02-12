@@ -1,9 +1,9 @@
+import type { ServerRoute } from '@hapi/hapi';
 import { Readable } from 'stream';
 
-export interface StorageUploadOptions {
-  maxSize?: number;
-}
-
 export interface StorageService {
-  upload(key: string, file: Readable, options?: StorageUploadOptions): Promise<string>;
+  readonly root: string;
+  upload(key: string, file: Readable): Promise<string>;
+  getUrl(key: string): string;
+  getRoutes?(): ServerRoute[];
 }

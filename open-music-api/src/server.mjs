@@ -5,6 +5,7 @@ import config from './config.mjs';
 import ClientError from './errors/client.mjs';
 import { AlbumPlugin, AlbumPsqlService } from './modules/album/index.mjs';
 import { AuthPlugin, AuthPsqlService } from './modules/auth/index.mjs';
+import { CacheRedisService } from './modules/caching/index.mjs';
 import MessagingRabbitMqService from './modules/messaging/service-rabbitmq.mjs';
 import {
   PlaylistCollaborationPlugin, PlaylistCollaborationPsqlService,
@@ -12,11 +13,10 @@ import {
 import PlaylistExportPlugin from './modules/playlist-export/plugin.mjs';
 import { PlaylistPlugin, PlaylistPsqlService } from './modules/playlist/index.mjs';
 import { SongPlugin, SongPsqlService } from './modules/song/index.mjs';
+import { StorageLocalService } from './modules/storage/index.mjs';
 import { TokenManager } from './modules/tokenize/index.mjs';
 import { UserPlugin, UserPsqlService } from './modules/user/index.mjs';
 import { consola } from './utils/terminal.mjs';
-import { StorageLocalService } from './modules/storage/index.mjs';
-import { CacheRedisService } from './modules/caching/index.mjs';
 
 export const createServer = async () => {
   const server = Hapi.server({
@@ -67,7 +67,12 @@ export const createServer = async () => {
       userService,
       tokenManager: TokenManager,
     },
-  }, {
+  }, /* {
+    plugin: UploadPlugin,
+    options: {
+      storageService,
+    },
+  }, */ {
     plugin: AlbumPlugin,
     options: {
       service: albumService,
@@ -102,6 +107,10 @@ export const createServer = async () => {
       messagingService,
     },
   }]);
+
+  server.route([
+    ...storageService.getRoutes?.() || [],
+  ]);
 
   server.ext('onPreResponse', (req, h) => {
     const { response } = req;
