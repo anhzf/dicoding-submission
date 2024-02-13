@@ -9,8 +9,8 @@ import routes from './routes.mjs';
 const PlaylistPlugin = {
   name: 'Playlist',
   version: '0.1.0',
-  register: async (server, { service }) => {
-    const handler = new Handler(service);
+  register: async (server, { service, cacheService }) => {
+    const handler = new Handler(service, cacheService);
     server.route(routes(handler));
   },
 };

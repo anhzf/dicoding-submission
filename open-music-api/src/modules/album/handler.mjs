@@ -1,4 +1,4 @@
-import CacheError from '../../errors/cache.mjs';
+import { cacheResponsePayload } from '../caching/utils.mjs';
 
 /**
  * @typedef {import('./types').Album} Album
@@ -37,6 +37,14 @@ export default class AlbumHandler {
     this.#service = service;
     this.#songService = songService;
     this.#cacheService = cacheService;
+
+    this.list = cacheResponsePayload(cacheService, 'albums', this.list.bind(this));
+    this.getLikesCount = cacheResponsePayload(
+      cacheService,
+      (req) => AlbumHandler.#getLikesCacheKey(req.params.albumId),
+      this.getLikesCount.bind(this),
+      { exp: 30 * 60 },
+    );
   }
 
   /**
@@ -83,6 +91,7 @@ export default class AlbumHandler {
     const payload = Validator.validatePayload(req.payload);
 
     const albumId = await this.#service.create(payload);
+    await this.#cacheService.delete('albums');
 
     const response = h.response({
       status: 'success',
@@ -104,6 +113,7 @@ export default class AlbumHandler {
     const payload = Validator.validatePayload(req.payload);
 
     await this.#service.update({ ...payload, id: albumId });
+    this.#cacheService.delete('albums');
 
     return {
       status: 'success',
@@ -118,6 +128,7 @@ export default class AlbumHandler {
   async destroy(req) {
     const { albumId } = req.params;
     await this.#service.delete(albumId);
+    this.#cacheService.delete('albums');
     return {
       status: 'success',
       message: 'Album berhasil dihapus',
@@ -136,6 +147,7 @@ export default class AlbumHandler {
     Validator.validateCoverHeaders(file.hapi.headers);
 
     await this.#service.setCover(albumId, file);
+    this.#cacheService.delete('albums');
 
     return h.response({
       status: 'success',
@@ -149,36 +161,47 @@ export default class AlbumHandler {
    */
   async getLikesCount(req, h) {
     const { albumId } = req.params;
-    /** in seconds */
-    const CACHE_LIFE_TIME = 60 * 30;
-    const headers = {};
+    const likes = await this.#service.likesCount(albumId);
 
-    const likes = await this.#cacheService.get(AlbumHandler.#getLikesCacheKey(albumId))
-      .then((result) => {
-        headers['X-Data-Source'] = 'cache';
-        return Number(result);
-      })
-      .catch(async (err) => {
-        if (err instanceof CacheError) {
-          const result = await this.#service.likesCount(albumId);
-
-          await this.#cacheService.set(AlbumHandler.#getLikesCacheKey(albumId), result, CACHE_LIFE_TIME);
-          return result;
-        }
-        throw err;
-      });
-
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         likes,
       },
     });
-
-    Object.assign(response.headers, headers);
-
-    return response;
   }
+  //  async getLikesCount(req, h) {
+  //     const { albumId } = req.params;
+  //     /** in seconds */
+  //     const CACHE_LIFE_TIME = 60 * 30;
+  //     const headers = {};
+
+  //     const likes = await this.#cacheService.get(AlbumHandler.#getLikesCacheKey(albumId))
+  //       .then((result) => {
+  //         headers['X-Data-Source'] = 'cache';
+  //         return Number(result);
+  //       })
+  //       .catch(async (err) => {
+  //         if (err instanceof CacheError) {
+  //           const result = await this.#service.likesCount(albumId);
+
+  //           await this.#cacheService.set(AlbumHandler.#getLikesCacheKey(albumId), result, CACHE_LIFE_TIME);
+  //           return result;
+  //         }
+  //         throw err;
+  //       });
+
+  //     const response = h.response({
+  //       status: 'success',
+  //       data: {
+  //         likes,
+  //       },
+  //     });
+
+  //     Object.assign(response.headers, headers);
+
+  //     return response;
+  //   }
 
   /**
    * @param {HRequest} req

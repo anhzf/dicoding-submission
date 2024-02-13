@@ -1,6 +1,7 @@
 import type { Output } from 'valibot';
 import type { SongSchema } from '../song/schema.mjs';
 import type { PlaylistActivityItemSchema, PlaylistActivityPayloadSchema, PlaylistPayloadSchema, PlaylistSchema } from './schema.mjs';
+import type { CacheService } from '../caching/types';
 
 export type OutPlaylist = Output<typeof PlaylistSchema>;
 
@@ -20,4 +21,5 @@ export interface PlaylistService {
 
 export interface PlaylistPluginOptions {
   service: PlaylistService;
+  cacheService?: CacheService;
 }

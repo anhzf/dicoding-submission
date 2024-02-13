@@ -1,20 +1,45 @@
+import { cacheResponsePayload } from '../caching/utils.mjs';
 import Validator from './validator.mjs';
 
 /**
  * @typedef {import('./types').PlaylistService} Service
  * @typedef {import('@hapi/hapi').Request} HRequest
  * @typedef {import('@hapi/hapi').ResponseToolkit} HResponseToolkit
+ * @typedef {import('../caching/types').CacheService} CacheService
  */
 
 export default class PlaylistHandler {
   /** @type {Service} */
   #service;
 
+  /** @type {CacheService?} */
+  #cacheService;
+
   /**
    * @param {Service} service
+   * @param {CacheService?} cacheService
    */
-  constructor(service) {
+  constructor(service, cacheService) {
     this.#service = service;
+    this.#cacheService = cacheService;
+
+    if (cacheService) {
+      this.list = cacheResponsePayload(
+        cacheService,
+        (req) => `playlists:${req.auth.credentials.id}`,
+        this.list.bind(this),
+      );
+      this.listSongs = cacheResponsePayload(
+        cacheService,
+        (req) => `playlist-songs:${req.params.id}[${req.auth.credentials.id}]`,
+        this.listSongs.bind(this),
+      );
+      this.listActivities = cacheResponsePayload(
+        cacheService,
+        (req) => `playlist-activities:${req.params.id}[${req.auth.credentials.id}]`,
+        this.listActivities.bind(this),
+      );
+    }
   }
 
   /**
@@ -40,6 +65,7 @@ export default class PlaylistHandler {
     const payload = Validator.validatePayload({ ...req.payload, owner });
 
     const playlistId = await this.#service.create(payload);
+    this.#cacheService?.delete(`playlists:${owner}`);
 
     return h.response({
       status: 'success',
@@ -58,6 +84,9 @@ export default class PlaylistHandler {
 
     await this.#service.verifyOwner(playlistId, req.auth.credentials.id);
     await this.#service.delete(playlistId);
+
+    await this.#cacheService?.delete(`playlists:${req.auth.credentials.id}[${req.auth.credentials.id}]`);
+    await this.#cacheService?.delete(`playlist-songs:${playlistId}[${req.auth.credentials.id}]`);
 
     return h.response({
       status: 'success',
@@ -99,6 +128,9 @@ export default class PlaylistHandler {
     this.#service.addActivity({
       action: 'add', playlistId, songId, userId: req.auth.credentials.id,
     });
+    await this.#cacheService?.delete(`playlists:${playlistId}`);
+    await this.#cacheService?.delete(`playlist-songs:${playlistId}[${req.auth.credentials.id}]`);
+    await this.#cacheService?.delete(`playlist-activities:${playlistId}[${req.auth.credentials.id}]`);
 
     return h.response({
       status: 'success',
@@ -120,6 +152,9 @@ export default class PlaylistHandler {
     this.#service.addActivity({
       action: 'delete', playlistId, songId, userId: req.auth.credentials.id,
     });
+    await this.#cacheService?.delete(`playlists:${playlistId}`);
+    await this.#cacheService?.delete(`playlist-songs:${playlistId}[${req.auth.credentials.id}]`);
+    await this.#cacheService?.delete(`playlist-activities:${playlistId}[${req.auth.credentials.id}]`);
 
     return h.response({
       status: 'success',

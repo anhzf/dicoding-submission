@@ -67,12 +67,7 @@ export const createServer = async () => {
       userService,
       tokenManager: TokenManager,
     },
-  }, /* {
-    plugin: UploadPlugin,
-    options: {
-      storageService,
-    },
-  }, */ {
+  }, {
     plugin: AlbumPlugin,
     options: {
       service: albumService,
@@ -93,6 +88,7 @@ export const createServer = async () => {
     plugin: PlaylistPlugin,
     options: {
       service: playlistService,
+      cacheService,
     },
   }, {
     plugin: PlaylistCollaborationPlugin,
@@ -126,6 +122,7 @@ export const createServer = async () => {
       return h.response({
         status: 'fail',
         message: response.message || 'Terjadi kegagalan pada server',
+        stack: response.stack,
       }).code(response.output.statusCode || 500);
     }
 
