@@ -5,8 +5,8 @@
       "name": "🏠",
     },
     {
-      "path": "./bookshelf-api",
-      "name": "👉 Bookshelf API",
+      "path": "./forum-api",
+      "name": "👉 Forum API",
     },
     {
       "path": "./open-music-api",
@@ -16,11 +16,16 @@
       "path": "./open-music-consumer",
       "name": "👉 Open Music Consumer",
     },
+    {
+      "path": "./bookshelf-api",
+      "name": "👉 Bookshelf API",
+    },
   ],
   "settings": {
     "conventionalCommits.scopes": [
       "bookshelf-api",
       "open-music-api",
+      "forum-api",
     ]
   }
 }

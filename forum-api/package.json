@@ -1,0 +1,32 @@
+{
+  "name": "@anhzf/forum-api",
+  "version": "0.1.0",
+  "author": {
+    "name": "anhzf",
+    "email": "work@anhzf.dev",
+    "url": "https://anhzf.dev"
+  },
+  "scripts": {
+    "test": "vitest",
+    "migrate": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json",
+    "migrate:test": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json -f config/test.json"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.3.7",
+    "@hapi/jwt": "^3.2.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "nanoid": "^5.0.6",
+    "pg": "^8.11.4",
+    "valibot": "^0.30.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@vitest/coverage-v8": "^1.4.0",
+    "config": "^3.3.11",
+    "node-pg-migrate": "^6.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3",
+    "vitest": "^1.4.0"
+  }
+}
