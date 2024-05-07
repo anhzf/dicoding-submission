@@ -1,5 +1,5 @@
 import AuthenticationRepository from '../../../domains/authentications/AuthenticationRepository.mjs';
-import NewAuth from '../../../domains/authentications/entities/NewAuth.js';
+import NewAuth from '../../../domains/authentications/entities/NewAuth.mjs';
 import UserRepository from '../../../domains/users/UserRepository.mjs';
 import AuthenticationTokenManager from '../../security/AuthenticationTokenManager.mjs';
 import PasswordHash from '../../security/PasswordHash.mjs';
