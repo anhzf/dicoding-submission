@@ -46,7 +46,9 @@ describe('RefreshAuthenticationUseCase', () => {
     mockAuthenticationTokenManager.verifyRefreshToken = vitest.fn()
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = vitest.fn()
-      .mockImplementation(() => Promise.resolve({ username: 'dicoding', id: 'user-123' }));
+      .mockImplementation(() => Promise.resolve({
+        username: 'dicoding', id: 'user-123',
+      }));
     mockAuthenticationTokenManager.createAccessToken = vitest.fn()
       .mockImplementation(() => Promise.resolve('some_new_access_token'));
     // Create the use case instace

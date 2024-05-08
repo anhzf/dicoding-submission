@@ -16,12 +16,6 @@ describe('AddUserUseCase', () => {
       fullname: 'Dicoding Indonesia',
     };
 
-    const mockRegisteredUser = new RegisteredUser({
-      id: 'user-123',
-      username: useCasePayload.username,
-      fullname: useCasePayload.fullname,
-    });
-
     /** creating dependency of use case */
     // @ts-expect-error
     const mockUserRepository = new UserRepository();
@@ -34,7 +28,11 @@ describe('AddUserUseCase', () => {
     mockPasswordHash.hash = vitest.fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'));
     mockUserRepository.create = vitest.fn()
-      .mockImplementation(() => Promise.resolve(mockRegisteredUser));
+      .mockImplementation(() => Promise.resolve(new RegisteredUser({
+        id: 'user-123',
+        username: useCasePayload.username,
+        fullname: useCasePayload.fullname,
+      })));
 
     /** creating use case instance */
     const getUserUseCase = new AddUserUseCase({
