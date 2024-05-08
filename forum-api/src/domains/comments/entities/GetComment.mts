@@ -2,11 +2,11 @@ import { nullable, object, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
-  id: string('GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  username: string('GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  content: string('GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  date: string('GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  deletedAt: nullable(string('GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')),
+  id: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  username: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  content: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  date: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  deletedAt: nullable(string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')),
 });
 
 type In = Input<typeof Schema>;
@@ -23,5 +23,5 @@ export default class GetComment implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated = createEntityValidator('GET_COMMENT', Schema);
+  #validated = createEntityValidator('COMMENT', Schema);
 }

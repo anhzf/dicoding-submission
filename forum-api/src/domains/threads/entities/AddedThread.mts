@@ -2,9 +2,9 @@ import { object, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
-  id: string('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  title: string('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  owner: string('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  id: string('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  title: string('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  owner: string('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'),
 });
 
 type In = Input<typeof Schema>;
@@ -19,5 +19,5 @@ export default class AddedThread implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated = createEntityValidator('ADDED_THREAD', Schema);
+  #validated = createEntityValidator('THREAD', Schema);
 }

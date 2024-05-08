@@ -2,9 +2,9 @@ import { object, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
-  threadId: string('INSERT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  ownerId: string('INSERT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  content: string('INSERT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  threadId: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  ownerId: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  content: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
 });
 
 type In = Input<typeof Schema>;
@@ -19,5 +19,5 @@ export default class InsertComment implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated = createEntityValidator('INSERT_COMMENT', Schema);
+  #validated = createEntityValidator('COMMENT', Schema);
 }

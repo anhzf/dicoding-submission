@@ -8,7 +8,7 @@ describe('InsertComment Entities', () => {
     // Action and assert
     // @ts-expect-error
     expect(() => new InsertComment(payload)).toThrowError(
-      'INSERT_COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED',
     );
   });
 
@@ -22,7 +22,7 @@ describe('InsertComment Entities', () => {
 
     // @ts-expect-error
     expect(() => new InsertComment(payload)).toThrowError(
-      'INSERT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
+      'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 

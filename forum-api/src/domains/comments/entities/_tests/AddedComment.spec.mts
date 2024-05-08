@@ -30,7 +30,6 @@ describe('AddedComment entities', () => {
       owner: 'user-123',
     };
 
-    // @ts-expect-error
     const comment = new AddedComment(payload);
 
     expect(comment.id).toEqual(payload.id);

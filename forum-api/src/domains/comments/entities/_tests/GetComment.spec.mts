@@ -8,7 +8,7 @@ describe('GetComment entities', () => {
 
     // @ts-expect-error
     expect(() => new GetComment(payload)).toThrowError(
-      'GET_COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED',
     );
   });
 
@@ -23,7 +23,7 @@ describe('GetComment entities', () => {
 
     // @ts-expect-error
     expect(() => new GetComment(payload)).toThrowError(
-      'GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
+      'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 
@@ -35,7 +35,9 @@ describe('GetComment entities', () => {
       date: '2021-02-10',
       deletedAt: '2021-02-11',
     };
+
     const getComment = new GetComment(payload);
+
     expect(getComment.id).toStrictEqual(payload.id);
     expect(getComment.content).toStrictEqual(payload.content);
     expect(getComment.username).toStrictEqual(payload.username);

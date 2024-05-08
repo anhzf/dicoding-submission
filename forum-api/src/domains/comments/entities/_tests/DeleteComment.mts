@@ -9,7 +9,7 @@ describe('DeleteComment entities', () => {
 
     // @ts-expect-error
     expect(() => new DeleteComment(payload)).toThrowError(
-      'DELETE_COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED',
     );
   });
 
@@ -22,7 +22,7 @@ describe('DeleteComment entities', () => {
 
     // @ts-expect-error
     expect(() => new DeleteComment(payload)).toThrowError(
-      'DELETE_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
+      'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 
@@ -33,8 +33,8 @@ describe('DeleteComment entities', () => {
       ownerId: 'user-123',
     };
 
-    // @ts-expect-error
     const comment = new DeleteComment(payload);
+
     expect(comment.threadId).toEqual(payload.threadId);
     expect(comment.commentId).toEqual(payload.commentId);
     expect(comment.ownerId).toEqual(payload.ownerId);

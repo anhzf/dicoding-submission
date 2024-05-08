@@ -2,9 +2,9 @@ import { object, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
-  id: string('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  content: string('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
-  owner: string('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  id: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  content: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
+  owner: string('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'),
 });
 
 type In = Input<typeof Schema>;
