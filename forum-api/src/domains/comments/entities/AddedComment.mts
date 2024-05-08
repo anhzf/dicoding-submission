@@ -10,7 +10,7 @@ const Schema = object({
 type In = Input<typeof Schema>;
 type Out = Output<typeof Schema>;
 
-export default abstract class AddedComment implements Out {
+export default class AddedComment implements Out {
   id!: string;
   content!: string;
   owner!: string;
