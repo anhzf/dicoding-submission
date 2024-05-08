@@ -1,9 +1,12 @@
 import Hapi from '@hapi/hapi';
+import { plugin as InertPlugin } from '@hapi/inert';
+import { plugin as JwtPlugin } from '@hapi/jwt';
 import UsersPlugin from '../../interfaces/http/api/users/index.mjs';
 import AuthenticationsPlugin from '../../interfaces/http/api/authentications/index.mjs';
 import DomainErrorTranslator from '../../commons/exceptions/DomainErrorTranslator.mjs';
 import { ClientError } from '../../commons/exceptions/ClientError.mjs';
 import type { Container } from '../container.mjs';
+import ThreadsPlugin from '../../interfaces/http/api/threads/index.mjs';
 
 declare global {
   interface Error {
@@ -18,12 +21,37 @@ const createServer = async (container: Container) => {
   });
 
   await server.register([
+    { plugin: JwtPlugin },
+    { plugin: InertPlugin },
+  ]);
+
+  server.auth.strategy('default', 'jwt', {
+    keys: import.meta.env.VITE_ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: import.meta.env.VITE_ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts: { decoded: { payload: AuthenticatedUser } }) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
+  await server.register([
     {
       plugin: UsersPlugin,
       options: { container },
     },
     {
       plugin: AuthenticationsPlugin,
+      options: { container },
+    },
+    {
+      plugin: ThreadsPlugin,
       options: { container },
     },
   ]);
