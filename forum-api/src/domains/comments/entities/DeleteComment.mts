@@ -10,7 +10,7 @@ const Schema = object({
 type In = Input<typeof Schema>;
 type Out = Output<typeof Schema>;
 
-export default abstract class DeleteComment implements Out {
+export default class DeleteComment implements Out {
   commentId!: string;
   threadId!: string;
   ownerId!: string;
