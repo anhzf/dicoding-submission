@@ -8,7 +8,7 @@ describe('AddedComment entities', () => {
     // Action and assert
     // @ts-expect-error
     expect(() => new AddedComment(payload)).toThrowError(
-      'COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -16,7 +16,7 @@ describe('AddedComment entities', () => {
     const payload = {
       id: true,
       content: 123,
-      owner: 123,
+      ownerId: 123,
     };
 
     // @ts-expect-error
@@ -27,13 +27,13 @@ describe('AddedComment entities', () => {
     const payload = {
       id: 'comment-123',
       content: 'content-123',
-      owner: 'user-123',
+      ownerId: 'user-123',
     };
 
     const comment = new AddedComment(payload);
 
     expect(comment.id).toEqual(payload.id);
     expect(comment.content).toEqual(payload.content);
-    expect(comment.ownerId).toEqual(payload.owner);
+    expect(comment.ownerId).toEqual(payload.ownerId);
   });
 });

@@ -6,7 +6,7 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe('/comments endpoint', () => {
+describe.sequential('/comments endpoint', () => {
   afterEach(async () => {
     await CommentsTableTestHelper.clean();
     await ThreadsTableTestHelper.cleanTableThread();
@@ -47,7 +47,7 @@ describe('/comments endpoint', () => {
     });
 
     const { data } = JSON.parse(response.payload);
-    user.accessToken = data.accessToken;
+    user.accessToken = data?.accessToken;
   });
 
   describe('endpoint /threads/{threadId}/comments', () => {
@@ -69,6 +69,7 @@ describe('/comments endpoint', () => {
       });
 
       const responseJson = JSON.parse(response.payload);
+
       reqBodyThread.id = responseJson.data.addedThread.id;
     });
 
@@ -78,6 +79,7 @@ describe('/comments endpoint', () => {
       };
 
       const server = await createServer(container);
+
       const response = await server.inject({
         method: 'POST',
         url: `/threads/${reqBodyThread.id}/comments`,
@@ -188,7 +190,7 @@ describe('/comments endpoint', () => {
       });
       const result = await CommentsTableTestHelper.get(commentId!);
       expect(response.statusCode).toEqual(401);
-      expect(result[0].is_delete).toEqual(false);
+      expect(result[0].deleted_at).toBeNull();
     });
 
     it('should response 200 and delete comment correctly', async () => {
@@ -205,7 +207,7 @@ describe('/comments endpoint', () => {
       });
       const result = await CommentsTableTestHelper.get(commentId!);
       expect(response.statusCode).toEqual(200);
-      expect(result[0].is_delete).toEqual(true);
+      expect(result[0].deleted_at).toBeInstanceOf(Date);
     });
   });
 

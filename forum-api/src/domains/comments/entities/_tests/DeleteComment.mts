@@ -9,7 +9,7 @@ describe('DeleteComment entities', () => {
 
     // @ts-expect-error
     expect(() => new DeleteComment(payload)).toThrowError(
-      'COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 

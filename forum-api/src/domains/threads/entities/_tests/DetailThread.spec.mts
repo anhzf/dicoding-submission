@@ -6,7 +6,7 @@ describe('DetailThread entities', () => {
     //   Action and assert
     // @ts-expect-error
     expect(() => new DetailThread(payload)).toThrowError(
-      'THREAD.NOT_CONTAIN_NEEDED',
+      'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -33,7 +33,7 @@ describe('DetailThread entities', () => {
       username: 'ghazi',
       title: 'lorem ipsum',
       body: 'lorem ipsum ipsum lorem',
-      date: '2022-01-22',
+      date: new Date('2022-01-22'),
     };
 
     //   Action

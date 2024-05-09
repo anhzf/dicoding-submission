@@ -5,7 +5,7 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe('/threads endpoint', () => {
+describe.sequential('/threads endpoint', () => {
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTableThread();
     await UsersTableTestHelper.cleanTable();
@@ -45,6 +45,7 @@ describe('/threads endpoint', () => {
     });
 
     const { data } = JSON.parse(response.payload);
+
     user.accessToken = data.accessToken;
   });
 
@@ -84,6 +85,7 @@ describe('/threads endpoint', () => {
       });
 
       const responseJson = JSON.parse(response.payload);
+
       expect(response.statusCode).toEqual(400);
       expect(responseJson).toBeDefined();
       expect(responseJson.message).toEqual(

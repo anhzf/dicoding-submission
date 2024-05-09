@@ -8,7 +8,7 @@ describe('GetComment entities', () => {
 
     // @ts-expect-error
     expect(() => new GetComment(payload)).toThrowError(
-      'COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -32,8 +32,8 @@ describe('GetComment entities', () => {
       id: 'comment-123',
       content: 'lorem ipsum',
       username: 'ghazi',
-      date: '2021-02-10',
-      deletedAt: '2021-02-11',
+      date: new Date('2021-02-10'),
+      deletedAt: new Date('2021-02-11'),
     };
 
     const getComment = new GetComment(payload);

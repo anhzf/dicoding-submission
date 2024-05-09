@@ -3,7 +3,7 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe('/users endpoint', () => {
+describe.sequential('/users endpoint', () => {
   afterAll(async () => {
     await pool.end();
   });

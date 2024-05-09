@@ -9,7 +9,7 @@ describe('AddedThread entities', () => {
     // Action and assert
     // @ts-expect-error
     expect(() => new AddedThread(payload)).toThrowError(
-      'THREAD.NOT_CONTAIN_NEEDED',
+      'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 

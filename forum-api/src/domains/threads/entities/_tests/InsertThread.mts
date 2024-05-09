@@ -7,13 +7,13 @@ describe('InsertThread entities', () => {
     //   Action and assert
     // @ts-expect-error
     expect(() => new InsertThread(payload)).toThrowError(
-      'THREAD.NOT_CONTAIN_NEEDED',
+      'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
   it('should throw error when data not specification', () => {
     const payload = {
-      owner: 123,
+      ownerId: 123,
       title: true,
       body: 12323232,
     };

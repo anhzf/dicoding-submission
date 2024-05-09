@@ -1,10 +1,11 @@
+import { nanoid } from 'nanoid';
 import AuthenticationsTableTestHelper from '../../../../tests/AuthenticationsTableTestHelper.mjs';
 import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
 import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe('/authentications endpoint', () => {
+describe.sequential('/authentications endpoint', () => {
   afterAll(async () => {
     await pool.end();
   });
@@ -16,19 +17,24 @@ describe('/authentications endpoint', () => {
 
   describe('when POST /authentications', () => {
     it('should response 201 and new authentication', async () => {
+      const credential = {
+        username: nanoid(),
+        password: 'password',
+      };
+
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
-        password: 'secret',
+        ...credential,
       };
+
       const server = await createServer(container);
+
       // add user
       await server.inject({
         method: 'POST',
         url: '/users',
         payload: {
-          username: 'dicoding',
-          password: 'secret',
+          ...credential,
           fullname: 'Dicoding Indonesia',
         },
       });
@@ -49,11 +55,16 @@ describe('/authentications endpoint', () => {
     });
 
     it('should response 400 if username not found', async () => {
+      const credential = {
+        username: nanoid(),
+        password: 'password',
+      };
+
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
-        password: 'secret',
+        ...credential,
       };
+
       const server = await createServer(container);
 
       // Action
@@ -71,19 +82,24 @@ describe('/authentications endpoint', () => {
     });
 
     it('should response 401 if password wrong', async () => {
+      const credential = {
+        username: nanoid(),
+        password: 'password',
+      };
+
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
-        password: 'wrong_password',
+        ...credential,
+        password: 'wrong_password'
       };
+
       const server = await createServer(container);
       // Add user
       await server.inject({
         method: 'POST',
         url: '/users',
         payload: {
-          username: 'dicoding',
-          password: 'secret',
+          ...credential,
           fullname: 'Dicoding Indonesia',
         },
       });
@@ -103,9 +119,14 @@ describe('/authentications endpoint', () => {
     });
 
     it('should response 400 if login payload not contain needed property', async () => {
+      const credential = {
+        username: nanoid(),
+        password: 'password',
+      };
+
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
+        username: credential.username,
       };
       const server = await createServer(container);
 
@@ -127,8 +148,9 @@ describe('/authentications endpoint', () => {
       // Arrange
       const requestPayload = {
         username: 123,
-        password: 'secret',
+        password: 'password',
       };
+
       const server = await createServer(container);
 
       // Action
@@ -148,36 +170,42 @@ describe('/authentications endpoint', () => {
 
   describe('when PUT /authentications', () => {
     it('should return 200 and new access token', async () => {
+      const credential = {
+        username: nanoid(),
+        password: 'password',
+      };
+
+      const requestPayload = {
+        ...credential,
+      };
+
       // Arrange
       const server = await createServer(container);
+
       // add user
       await server.inject({
         method: 'POST',
         url: '/users',
         payload: {
-          username: 'dicoding',
-          password: 'secret',
+          ...credential,
           fullname: 'Dicoding Indonesia',
         },
       });
+
       // login user
       const loginResponse = await server.inject({
         method: 'POST',
         url: '/authentications',
-        payload: {
-          username: 'dicoding',
-          password: 'secret',
-        },
+        payload: requestPayload,
       });
+
       const { data: { refreshToken } } = JSON.parse(loginResponse.payload);
 
       // Action
       const response = await server.inject({
         method: 'PUT',
         url: '/authentications',
-        payload: {
-          refreshToken,
-        },
+        payload: { refreshToken },
       });
 
       const responseJson = JSON.parse(response.payload);
@@ -211,9 +239,7 @@ describe('/authentications endpoint', () => {
       const response = await server.inject({
         method: 'PUT',
         url: '/authentications',
-        payload: {
-          refreshToken: 123,
-        },
+        payload: { refreshToken: 123 },
       });
 
       const responseJson = JSON.parse(response.payload);
@@ -230,9 +256,7 @@ describe('/authentications endpoint', () => {
       const response = await server.inject({
         method: 'PUT',
         url: '/authentications',
-        payload: {
-          refreshToken: 'invalid_refresh_token',
-        },
+        payload: { refreshToken: 'invalid_refresh_token' },
       });
 
       // Assert
@@ -245,7 +269,8 @@ describe('/authentications endpoint', () => {
     it('should return 400 if refresh token not registered in database', async () => {
       // Arrange
       const server = await createServer(container);
-      const refreshToken = await container.get('authenticationTokenManager').createRefreshToken({ username: 'dicoding' });
+      const refreshToken = await container.get('authenticationTokenManager')
+        .createRefreshToken({ username: 'dicoding' });
 
       // Action
       const response = await server.inject({

@@ -8,7 +8,7 @@ describe('InsertComment Entities', () => {
     // Action and assert
     // @ts-expect-error
     expect(() => new InsertComment(payload)).toThrowError(
-      'COMMENT.NOT_CONTAIN_NEEDED',
+      'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 

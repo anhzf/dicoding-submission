@@ -11,21 +11,21 @@ describe('GetDetailThreadUseCase interface', () => {
     const secondCommentId = 'comment-12523232';
     const expectedDetailThread = {
       id: threadId,
-      username: 'ghazi',
+      username: 'anhzf',
       title: 'Judul',
       body: 'Body thread',
-      date: '2021-01-01',
+      date: new Date('2021-01-01'),
       comments: [
         {
           id: firstCommentId,
           username: 'johndoe',
-          date: '2021-08-08T07:22:33.555Z',
+          date: new Date('2021-08-08T07:22:33.555Z'),
           content: 'sebuah comment',
         },
         {
           id: secondCommentId,
           username: 'dicoding',
-          date: '2021-08-08T07:26:21.338Z',
+          date: new Date('2021-08-08T07:26:21.338Z'),
           content: '**komentar telah dihapus**',
         },
       ],
@@ -42,8 +42,8 @@ describe('GetDetailThreadUseCase interface', () => {
           id: threadId,
           title: 'Judul',
           body: 'Body thread',
-          username: 'ghazi',
-          date: '2021-01-01',
+          username: 'anhzf',
+          date: new Date('2021-01-01'),
         }),
       ));
 
@@ -52,16 +52,16 @@ describe('GetDetailThreadUseCase interface', () => {
         new GetComment({
           id: firstCommentId,
           username: 'johndoe',
-          date: '2021-08-08T07:22:33.555Z',
+          date: new Date('2021-08-08T07:22:33.555Z'),
           content: 'sebuah comment',
           deletedAt: null,
         }),
         new GetComment({
           id: secondCommentId,
           username: 'dicoding',
-          date: '2021-08-08T07:26:21.338Z',
+          date: new Date('2021-08-08T07:26:21.338Z'),
           content: 'content comment',
-          deletedAt: '2021-08-08T07:26:21.338Z',
+          deletedAt: new Date('2021-08-08T07:26:21.338Z'),
         }),
       ]));
 
