@@ -3,6 +3,7 @@ import ThreadRepository from '../../domains/threads/ThreadRepository.mjs';
 import AddedThread from '../../domains/threads/entities/AddedThread.mjs';
 import DetailThread from '../../domains/threads/entities/DetailThread.mjs';
 import type InsertThread from '../../domains/threads/entities/InsertThread.mjs';
+import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 
 export default class ThreadRepositoryPostgres extends ThreadRepository {
   #pool: Pool;
@@ -22,8 +23,8 @@ export default class ThreadRepositoryPostgres extends ThreadRepository {
       values: [id, payload.title, payload.body, payload.ownerId, date],
     };
 
-    const result = await this.#pool.query(query);
-    return new AddedThread({ ...result.rows[0] });
+    const { rows } = await this.#pool.query(query);
+    return new AddedThread({ ...rows[0] });
   }
 
   async isExist(threadId: string) {
@@ -38,19 +39,16 @@ export default class ThreadRepositoryPostgres extends ThreadRepository {
 
   async get(threadId: string) {
     const query = {
-      text: `SELECT
-      threads.id,
-      username,
-      title,
-      body,
-      date
-     FROM threads
+      text: `SELECT threads.id, username, title, body, date FROM threads
      JOIN users ON threads.owner = users.id
      WHERE threads.id = $1`,
       values: [threadId],
     };
 
-    const result = await this.#pool.query(query);
-    return new DetailThread({ ...result.rows[0] });
+    const { rows: [row] } = await this.#pool.query(query);
+
+    if (!row) throw new NotFoundError('thread not found');
+
+    return new DetailThread(row);
   }
 }

@@ -26,12 +26,12 @@ const createServer = async (container: Container) => {
   ]);
 
   server.auth.strategy('default', 'jwt', {
-    keys: import.meta.env.VITE_ACCESS_TOKEN_KEY,
+    keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
       aud: false,
       iss: false,
       sub: false,
-      maxAgeSec: import.meta.env.VITE_ACCESS_TOKEN_AGE,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
     },
     validate: (artifacts: { decoded: { payload: AuthenticatedUser } }) => ({
       isValid: true,

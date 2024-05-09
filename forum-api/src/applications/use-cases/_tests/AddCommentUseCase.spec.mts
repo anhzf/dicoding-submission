@@ -16,7 +16,7 @@ describe('AddCommentUseCase', () => {
     const expectedAddComment = new AddedComment({
       id: 'comment-123',
       content: useCasePayload.content,
-      owner: credential.id,
+      ownerId: credential.id,
     });
 
     const { content, threadId, ownerId } = useCasePayload;
@@ -31,7 +31,7 @@ describe('AddCommentUseCase', () => {
     mockCommentRepository.insert = vitest.fn(() => Promise.resolve(new AddedComment({
       id: 'comment-123',
       content: 'content comment-1234',
-      owner: 'user-123',
+      ownerId: 'user-123',
     })));
 
     mockThreadRepository.isExist = vitest.fn()

@@ -1,9 +1,11 @@
 import type { Pool } from 'pg';
+import { CONSTRAINT_VIOLATION_MAP } from '../../commons/exceptions/PostgresError.mjs';
 import CommentRepository from '../../domains/comments/CommentRepository.mjs';
 import AddedComment from '../../domains/comments/entities/AddedComment.mjs';
 import type DeleteComment from '../../domains/comments/entities/DeleteComment.mjs';
 import GetComment from '../../domains/comments/entities/GetComment.mjs';
 import type InsertComment from '../../domains/comments/entities/InsertComment.mjs';
+import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 
 export default class CommentRepositoryPostgres extends CommentRepository {
   #pool: Pool;
@@ -17,56 +19,83 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
   async insert(payload: InsertComment) {
     const id = `comment-${this.#idGenerator()}`;
-    const date = new Date().toISOString();
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, thread_id, owner',
+      text: 'INSERT INTO threads_comments (id, thread_id, user_id, content) VALUES($1, $2, $3, $4) RETURNING id, thread_id, content, user_id',
       values: [
         id,
-        payload.content,
         payload.threadId,
         payload.ownerId,
-        date,
+        payload.content,
       ],
     };
-    const result = await this.#pool.query(query);
-    const data = {
-      threadId: result.rows[0].thread_id,
-      ...result.rows[0],
+
+    try {
+      const { rows } = await this.#pool.query(query);
+
+      const data = {
+        threadId: rows[0].thread_id,
+
+        ...rows[0],
+      };
+
+      return new AddedComment({
+        id: data.id,
+        content: data.content,
+        ownerId: data.user_id,
+      });
+    } catch (err: any) {
+      const translated = CONSTRAINT_VIOLATION_MAP[err.code]?.('comment', 'thread');
+      throw translated || err;
+    }
+  }
+
+  async isExist(commentId: string): Promise<boolean> {
+    const query = {
+      text: 'SELECT id from threads_comments WHERE id = $1',
+      values: [commentId],
     };
 
-    return new AddedComment(data);
+    const { rowCount } = await this.#pool.query(query);
+
+    return !!rowCount;
   }
 
   async isOwned(commentId: string, ownerId: string) {
     const query = {
-      text: 'SELECT id from comments WHERE owner = $1 AND id = $2',
+      text: 'SELECT id from threads_comments WHERE user_id = $1 AND id = $2',
       values: [ownerId, commentId],
     };
 
-    const result = await this.#pool.query(query);
+    const { rowCount } = await this.#pool.query(query);
 
-    return !!result.rowCount;
+    return !!rowCount;
   }
 
   async destroy({ commentId }: DeleteComment) {
     const query = {
-      text: 'UPDATE comments SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1',
+      text: 'UPDATE threads_comments SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1',
       values: [commentId],
     };
 
-    await this.#pool.query(query);
+    const { rowCount } = await this.#pool.query(query);
+
+    if (!rowCount) throw new NotFoundError('comment not found');
   }
 
   async hasThreadOf(threadId: string) {
     const query = {
-      text: `SELECT comments.*, users.username
-      FROM comments LEFT JOIN users ON users.id = comments.owner
-      WHERE comments.thread_id = $1
+      text: `SELECT threads_comments.*, users.username
+      FROM threads_comments LEFT JOIN users ON users.id = threads_comments.user_id
+      WHERE threads_comments.thread_id = $1
       ORDER BY date ASC`,
       values: [threadId],
     };
 
-    const result = await this.#pool.query(query);
-    return result.rows.map((item) => new GetComment(item));
+    const { rows } = await this.#pool.query(query);
+
+    return rows.map((item) => new GetComment({
+      ...item,
+      deletedAt: item.deleted_at,
+    }));
   }
 }

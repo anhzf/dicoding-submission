@@ -34,6 +34,6 @@ describe('AddedComment entities', () => {
 
     expect(comment.id).toEqual(payload.id);
     expect(comment.content).toEqual(payload.content);
-    expect(comment.owner).toEqual(payload.owner);
+    expect(comment.ownerId).toEqual(payload.owner);
   });
 });

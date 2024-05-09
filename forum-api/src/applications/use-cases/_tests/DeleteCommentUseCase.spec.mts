@@ -16,9 +16,9 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(true));
     mockCommentRepository.isOwned = vitest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(true));
     mockCommentRepository.destroy = vitest.fn()
       .mockImplementation(() => Promise.resolve({ status: 'success' }));
 

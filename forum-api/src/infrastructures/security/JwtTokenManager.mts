@@ -8,17 +8,17 @@ export default class JwtTokenManager extends AuthenticationTokenManager {
   }
 
   async createAccessToken(payload: HapiJwt.Payload) {
-    return this.jwt.generate(payload, import.meta.env.VITE_ACCESS_TOKEN_KEY!);
+    return this.jwt.generate(payload, process.env.ACCESS_TOKEN_KEY!);
   }
 
   async createRefreshToken(payload: HapiJwt.Payload) {
-    return this.jwt.generate(payload, import.meta.env.VITE_REFRESH_TOKEN_KEY!);
+    return this.jwt.generate(payload, process.env.REFRESH_TOKEN_KEY!);
   }
 
   async verifyRefreshToken(token: string) {
     try {
       const artifacts = this.jwt.decode(token);
-      this.jwt.verify(artifacts, import.meta.env.VITE_REFRESH_TOKEN_KEY!);
+      this.jwt.verify(artifacts, process.env.REFRESH_TOKEN_KEY!);
     } catch (error) {
       throw new InvariantError('refresh token tidak valid');
     }
