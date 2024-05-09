@@ -17,6 +17,9 @@ import ThreadRepositoryPostgres from './repository/ThreadRepositoryPostgres.mjs'
 import CommentRepositoryPostgres from './repository/CommentRepositoryPostgres.mjs';
 import AddCommentUseCase from '../applications/use-cases/AddCommentUseCase.mjs';
 import DeleteCommentUseCase from '../applications/use-cases/DeleteCommentUseCase.mjs';
+import AddReplyUseCase from '../applications/use-cases/AddReplyUseCase.mjs';
+import ReplyRepositoryPostgres from './repository/ReplyRepositoryPostgres.mjs';
+import DeleteReplyUseCase from '../applications/use-cases/DeleteReplyUseCase.mjs';
 
 export interface Container {
   get: typeof containerRegistry.get;
@@ -28,6 +31,7 @@ containerRegistry.register('userRepository', () => new UserRepositoryPostgres(po
 containerRegistry.register('authenticationRepository', () => new AuthenticationRepositoryPostgres(pool));
 containerRegistry.register('threadRepository', () => new ThreadRepositoryPostgres(pool, nanoid));
 containerRegistry.register('commentRepository', () => new CommentRepositoryPostgres(pool, nanoid));
+containerRegistry.register('replyRepository', () => new ReplyRepositoryPostgres(pool, nanoid));
 
 containerRegistry.register('addUserUseCase', () => new AddUserUseCase({
   userRepository: containerRegistry.get('userRepository'),
@@ -52,6 +56,7 @@ containerRegistry.register('addThreadUseCase', () => new AddThreadUseCase({
 containerRegistry.register('getDetailThreadUseCase', () => new GetDetailThreadUseCase({
   threadRepository: containerRegistry.get('threadRepository'),
   commentRepository: containerRegistry.get('commentRepository'),
+  replyRepository: containerRegistry.get('replyRepository'),
 }));
 containerRegistry.register('addCommentUseCase', () => new AddCommentUseCase({
   commentRepository: containerRegistry.get('commentRepository'),
@@ -60,6 +65,16 @@ containerRegistry.register('addCommentUseCase', () => new AddCommentUseCase({
 containerRegistry.register('deleteCommentUseCase', () => new DeleteCommentUseCase({
   commentRepository: containerRegistry.get('commentRepository'),
   threadRepository: containerRegistry.get('threadRepository'),
+}));
+containerRegistry.register('addReplyUseCase', () => new AddReplyUseCase({
+  replyRepository: containerRegistry.get('replyRepository'),
+  threadRepository: containerRegistry.get('threadRepository'),
+  commentRepository: containerRegistry.get('commentRepository'),
+}));
+containerRegistry.register('deleteReplyUseCase', () => new DeleteReplyUseCase({
+  replyRepository: containerRegistry.get('replyRepository'),
+  threadRepository: containerRegistry.get('threadRepository'),
+  commentRepository: containerRegistry.get('commentRepository'),
 }));
 
 const container: Container = {

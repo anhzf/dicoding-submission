@@ -3,15 +3,18 @@
 import type AuthenticationTokenManager from '../applications/security/AuthenticationTokenManager.mjs';
 import type PasswordHash from '../applications/security/PasswordHash.mjs';
 import type AddCommentUseCase from '../applications/use-cases/AddCommentUseCase.mjs';
+import type AddReplyUseCase from '../applications/use-cases/AddReplyUseCase.mjs';
 import type AddThreadUseCase from '../applications/use-cases/AddThreadUseCase.mjs';
 import type AddUserUseCase from '../applications/use-cases/AddUserUseCase.mjs';
 import type DeleteCommentUseCase from '../applications/use-cases/DeleteCommentUseCase.mjs';
+import type DeleteReplyUseCase from '../applications/use-cases/DeleteReplyUseCase.mjs';
 import type GetDetailThreadUseCase from '../applications/use-cases/GetDetailThreadUseCase.mjs';
 import type LoginUserUseCase from '../applications/use-cases/LoginUserUseCase.mjs';
 import type LogoutUserUseCase from '../applications/use-cases/LogoutUserUseCase.mjs';
 import type RefreshAuthenticationUseCase from '../applications/use-cases/RefreshAuthenticationUseCase.mjs';
 import type AuthenticationRepository from '../domains/authentications/AuthenticationRepository.mjs';
 import type CommentRepository from '../domains/comments/CommentRepository.mjs';
+import type ReplyRepository from '../domains/replies/ReplyRepository.mjs';
 import type ThreadRepository from '../domains/threads/ThreadRepository.mjs';
 import UserRepository from '../domains/users/UserRepository.mjs';
 
@@ -22,6 +25,7 @@ interface ServiceMap {
   authenticationRepository: AuthenticationRepository;
   threadRepository: ThreadRepository;
   commentRepository: CommentRepository;
+  replyRepository: ReplyRepository;
   addUserUseCase: AddUserUseCase;
   loginUserUseCase: LoginUserUseCase;
   logoutUserUseCase: LogoutUserUseCase;
@@ -30,6 +34,8 @@ interface ServiceMap {
   getDetailThreadUseCase: GetDetailThreadUseCase;
   addCommentUseCase: AddCommentUseCase;
   deleteCommentUseCase: DeleteCommentUseCase;
+  addReplyUseCase: AddReplyUseCase;
+  deleteReplyUseCase: DeleteReplyUseCase;
 }
 
 interface ServiceRegister<K extends keyof ServiceMap> {

@@ -1,5 +1,6 @@
 import CommentRepository from '../../../domains/comments/CommentRepository.mjs';
 import GetComment from '../../../domains/comments/entities/GetComment.mjs';
+import ReplyRepository from '../../../domains/replies/ReplyRepository.mjs';
 import ThreadRepository from '../../../domains/threads/ThreadRepository.mjs';
 import DetailThread from '../../../domains/threads/entities/DetailThread.mjs';
 import GetDetailThreadUseCase from '../GetDetailThreadUseCase.mjs';
@@ -35,6 +36,8 @@ describe('GetDetailThreadUseCase interface', () => {
     const mockThreadRepository = new ThreadRepository();
     // @ts-expect-error
     const mockCommentRepository = new CommentRepository();
+    // @ts-expect-error
+    const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.get = vitest.fn()
       .mockImplementation(() => Promise.resolve(
@@ -68,6 +71,7 @@ describe('GetDetailThreadUseCase interface', () => {
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     const threads = await getDetailThreadUseCase.execute(threadId);

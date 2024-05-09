@@ -8,6 +8,7 @@ import CommentsPlugin from '../../interfaces/http/api/comments/index.mjs';
 import ThreadsPlugin from '../../interfaces/http/api/threads/index.mjs';
 import UsersPlugin from '../../interfaces/http/api/users/index.mjs';
 import type { Container } from '../container.mjs';
+import RepliesPlugin from '../../interfaces/http/api/replies/index.mjs';
 
 declare global {
   interface Error {
@@ -59,6 +60,10 @@ const createServer = async (container: Container) => {
       plugin: CommentsPlugin,
       options: { container },
     },
+    {
+      plugin: RepliesPlugin,
+      options: { container },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -74,6 +79,13 @@ const createServer = async (container: Container) => {
         const newResponse = h.response({
           status: 'fail',
           message: translatedError.message,
+          data: ['development', 'test'].includes(process.env.NODE_ENV!) ? {
+            error: {
+              name: translatedError.name,
+              stack: translatedError.stack,
+              message: translatedError.message,
+            },
+          } : null
         });
         newResponse.code(translatedError.statusCode);
         return newResponse;
@@ -89,7 +101,11 @@ const createServer = async (container: Container) => {
         status: 'error',
         message: 'terjadi kegagalan pada server kami',
         data: ['development', 'test'].includes(process.env.NODE_ENV!) ? {
-          error: { ...translatedError },
+          error: {
+            name: translatedError.name,
+            stack: translatedError.stack,
+            message: translatedError.message,
+          },
         } : null,
       });
       newResponse.code(500);
