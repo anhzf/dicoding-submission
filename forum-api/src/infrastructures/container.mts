@@ -15,6 +15,8 @@ import AddThreadUseCase from '../applications/use-cases/AddThreadUseCase.mjs';
 import GetDetailThreadUseCase from '../applications/use-cases/GetDetailThreadUseCase.mjs';
 import ThreadRepositoryPostgres from './repository/ThreadRepositoryPostgres.mjs';
 import CommentRepositoryPostgres from './repository/CommentRepositoryPostgres.mjs';
+import AddCommentUseCase from '../applications/use-cases/AddCommentUseCase.mjs';
+import DeleteCommentUseCase from '../applications/use-cases/DeleteCommentUseCase.mjs';
 
 export interface Container {
   get: typeof containerRegistry.get;
@@ -50,6 +52,14 @@ containerRegistry.register('addThreadUseCase', () => new AddThreadUseCase({
 containerRegistry.register('getDetailThreadUseCase', () => new GetDetailThreadUseCase({
   threadRepository: containerRegistry.get('threadRepository'),
   commentRepository: containerRegistry.get('commentRepository'),
+}));
+containerRegistry.register('addCommentUseCase', () => new AddCommentUseCase({
+  commentRepository: containerRegistry.get('commentRepository'),
+  threadRepository: containerRegistry.get('threadRepository'),
+}));
+containerRegistry.register('deleteCommentUseCase', () => new DeleteCommentUseCase({
+  commentRepository: containerRegistry.get('commentRepository'),
+  threadRepository: containerRegistry.get('threadRepository'),
 }));
 
 const container: Container = {

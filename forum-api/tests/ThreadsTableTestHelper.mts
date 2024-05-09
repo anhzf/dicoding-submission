@@ -15,7 +15,7 @@ const addThread = async ({
   await pool.query(query);
 };
 
-const getThreadById = async (id) => {
+const getThreadById = async (id: string) => {
   const query = {
     text: 'SELECT * FROM threads WHERE id=$1',
     values: [id],

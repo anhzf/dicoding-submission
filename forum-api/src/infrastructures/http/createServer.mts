@@ -1,12 +1,13 @@
 import Hapi from '@hapi/hapi';
 import { plugin as InertPlugin } from '@hapi/inert';
 import { plugin as JwtPlugin } from '@hapi/jwt';
-import UsersPlugin from '../../interfaces/http/api/users/index.mjs';
-import AuthenticationsPlugin from '../../interfaces/http/api/authentications/index.mjs';
-import DomainErrorTranslator from '../../commons/exceptions/DomainErrorTranslator.mjs';
 import { ClientError } from '../../commons/exceptions/ClientError.mjs';
-import type { Container } from '../container.mjs';
+import DomainErrorTranslator from '../../commons/exceptions/DomainErrorTranslator.mjs';
+import AuthenticationsPlugin from '../../interfaces/http/api/authentications/index.mjs';
+import CommentsPlugin from '../../interfaces/http/api/comments/index.mjs';
 import ThreadsPlugin from '../../interfaces/http/api/threads/index.mjs';
+import UsersPlugin from '../../interfaces/http/api/users/index.mjs';
+import type { Container } from '../container.mjs';
 
 declare global {
   interface Error {
@@ -54,6 +55,10 @@ const createServer = async (container: Container) => {
       plugin: ThreadsPlugin,
       options: { container },
     },
+    {
+      plugin: CommentsPlugin,
+      options: { container },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -83,6 +88,9 @@ const createServer = async (container: Container) => {
       const newResponse = h.response({
         status: 'error',
         message: 'terjadi kegagalan pada server kami',
+        data: process.env.NODE_ENV === 'development' ? {
+          error: { ...translatedError },
+        } : null,
       });
       newResponse.code(500);
       return newResponse;
