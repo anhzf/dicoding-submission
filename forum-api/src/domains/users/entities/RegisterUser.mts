@@ -1,7 +1,11 @@
 import { maxLength, object, parse, regex, string, type Input, type Output } from 'valibot';
+import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
-  username: string('REGISTER_USER.NOT_MEET_DATA_TYPE_SPECIFICATION', [maxLength(50, 'REGISTER_USER.USERNAME_LIMIT_CHAR'), regex(/^[\w]+$/, 'REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER')]),
+  username: string('REGISTER_USER.NOT_MEET_DATA_TYPE_SPECIFICATION', [
+    maxLength(50, 'REGISTER_USER.USERNAME_LIMIT_CHAR'),
+    regex(/^[\w]+$/, 'REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER'),
+  ]),
   fullname: string('REGISTER_USER.NOT_MEET_DATA_TYPE_SPECIFICATION'),
   password: string('REGISTER_USER.NOT_MEET_DATA_TYPE_SPECIFICATION'),
 });
@@ -18,12 +22,5 @@ export default class RegisterUser implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated(input: In) {
-    const inKeys = Object.keys(input);
-    if (Object.keys(Schema.entries).some((key) => !inKeys.includes(key))) {
-      throw new Error('REGISTER_USER.NOT_CONTAIN_NEEDED_PROPERTY');
-    }
-
-    return parse(Schema, input);
-  }
+  #validated = createEntityValidator('REGISTER_USER', Schema);
 }

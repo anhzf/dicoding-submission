@@ -12,8 +12,8 @@ export default class ThreadsHandler {
     const useCasePayload = request.payload;
     const credential = request.auth.credentials;
 
-    const postThread = this.#container.get('addThreadUseCase');
-    const addedThread = await postThread.execute(useCasePayload as any, credential as any);
+    const action = this.#container.get('addThreadUseCase');
+    const addedThread = await action.execute(useCasePayload as any, credential as any);
 
     const response = h.response({
       status: 'success',

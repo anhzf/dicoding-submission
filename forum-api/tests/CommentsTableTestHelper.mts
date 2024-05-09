@@ -5,18 +5,17 @@ const add = async ({
   content = 'lorem ipsum',
   threadId = 'thread-123',
   owner = 'user-123',
-  currentDate = new Date().toISOString(),
 }) => {
   const query = {
-    text: 'INSERT INTO comments VALUES ($1,$2,$3,$4,$5)',
-    values: [id, content, threadId, owner, currentDate],
+    text: 'INSERT INTO threads_comments (id, content, thread_id, owner) VALUES ($1, $2, $3, $4)',
+    values: [id, content, threadId, owner],
   };
   await pool.query(query);
 };
 
 const get = async (id: string) => {
   const query = {
-    text: 'SELECT * FROM comments where id = $1',
+    text: 'SELECT * FROM threads_comments where id = $1',
     values: [id],
   };
 
@@ -25,7 +24,7 @@ const get = async (id: string) => {
 };
 
 const clean = async () => {
-  await pool.query('DELETE FROM comments WHERE 1=1');
+  await pool.query('DELETE FROM threads_comments WHERE 1=1');
 };
 
 const CommentsTableTestHelper = {

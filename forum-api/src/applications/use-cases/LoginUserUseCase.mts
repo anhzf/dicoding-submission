@@ -39,6 +39,7 @@ export default class LoginUserUseCase {
 
     const accessToken = await this.#authenticationTokenManager
       .createAccessToken({ username, id });
+
     const refreshToken = await this.#authenticationTokenManager
       .createRefreshToken({ username, id });
 

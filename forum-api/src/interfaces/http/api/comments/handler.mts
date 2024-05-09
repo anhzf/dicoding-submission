@@ -17,6 +17,7 @@ export default class CommentsHandler {
       threadId,
       ownerId: credential.id as string,
     };
+
     const postComment = this.#container.get('addCommentUseCase');
     const addComment = await postComment.execute(payload);
 

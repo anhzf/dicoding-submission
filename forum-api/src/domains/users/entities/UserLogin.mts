@@ -1,4 +1,5 @@
 import { object, parse, string, type Input, type Output } from 'valibot';
+import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({
   username: string('USER_LOGIN.NOT_MEET_DATA_TYPE_SPECIFICATION'),
@@ -16,12 +17,5 @@ export default class UserLogin implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated(input: In) {
-    const inKeys = Object.keys(input);
-    if (Object.keys(Schema.entries).some((key) => !inKeys.includes(key))) {
-      throw new Error('USER_LOGIN.NOT_CONTAIN_NEEDED_PROPERTY');
-    }
-
-    return parse(Schema, input);
-  }
+  #validated = createEntityValidator('USER_LOGIN', Schema);
 }

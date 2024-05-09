@@ -88,7 +88,7 @@ const createServer = async (container: Container) => {
       const newResponse = h.response({
         status: 'error',
         message: 'terjadi kegagalan pada server kami',
-        data: process.env.NODE_ENV === 'development' ? {
+        data: ['development', 'test'].includes(process.env.NODE_ENV!) ? {
           error: { ...translatedError },
         } : null,
       });
