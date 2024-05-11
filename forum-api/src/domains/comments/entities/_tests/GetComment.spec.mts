@@ -31,7 +31,7 @@ describe('GetComment entities', () => {
     const payload = {
       id: 'comment-123',
       content: 'lorem ipsum',
-      username: 'ghazi',
+      username: 'anhzf',
       date: new Date('2021-02-10'),
       deletedAt: new Date('2021-02-11'),
     };

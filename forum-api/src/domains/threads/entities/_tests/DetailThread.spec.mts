@@ -30,7 +30,7 @@ describe('DetailThread entities', () => {
   it('should thread correctly', () => {
     const payload = {
       id: 'thread-123',
-      username: 'ghazi',
+      username: 'anhzf',
       title: 'lorem ipsum',
       body: 'lorem ipsum ipsum lorem',
       date: new Date('2022-01-22'),
