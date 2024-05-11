@@ -1,36 +1,36 @@
 import pool from '../src/infrastructures/database/postgres/pool.mjs';
 
-const add = async ({
-  id = 'comment-123',
-  content = 'lorem ipsum',
-  threadId = 'thread-123',
-  owner = 'user-123',
-}) => {
-  const query = {
-    text: 'INSERT INTO threads_comments (id, content, thread_id, owner) VALUES ($1, $2, $3, $4)',
-    values: [id, content, threadId, owner],
-  };
-  await pool.query(query);
-};
-
-const get = async (id: string) => {
-  const query = {
-    text: 'SELECT * FROM threads_comments where id = $1',
-    values: [id],
-  };
-
-  const result = await pool.query(query);
-  return result.rows;
-};
-
-const clean = async () => {
-  await pool.query('DELETE FROM threads_comments WHERE 1=1');
-};
-
 const CommentsTableTestHelper = {
-  add,
-  get,
-  clean,
+  async add({
+    id = 'comment-123',
+    content = 'lorem ipsum',
+    threadId = 'thread-123',
+    userId = 'user-123',
+  }) {
+    const query = {
+      text: 'INSERT INTO comments (id, content, thread_id, user_id) VALUES ($1, $2, $3, $4) RETURNING *',
+      values: [id, content, threadId, userId],
+    };
+
+    const { rows } = await pool.query(query);
+
+    return rows[0];
+  },
+
+  async get(id: string) {
+    const query = {
+      text: 'SELECT * FROM comments where id = $1',
+      values: [id],
+    };
+
+    const { rows } = await pool.query(query);
+
+    return rows[0];
+  },
+
+  async truncate() {
+    await pool.query('TRUNCATE TABLE comments CASCADE');
+  },
 };
 
 export default CommentsTableTestHelper;

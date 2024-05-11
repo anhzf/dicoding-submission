@@ -6,5 +6,10 @@ configDotenv();
 export default defineConfig({
   test: {
     globals: true,
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      },
+    },
   },
 });

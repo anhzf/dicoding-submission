@@ -1,16 +1,18 @@
 import pool from '../src/infrastructures/database/postgres/pool.mjs';
 
 const AuthenticationsTableTestHelper = {
-  async addToken(token: string) {
+  async add(token: string) {
     const query = {
-      text: 'INSERT INTO authentications VALUES($1)',
+      text: 'INSERT INTO authentications VALUES($1) RETURNING *',
       values: [token],
     };
 
-    await pool.query(query);
+    const { rows } = await pool.query(query);
+
+    return rows[0];
   },
 
-  async findToken(token: string) {
+  async get(token: string) {
     const query = {
       text: 'SELECT token FROM authentications WHERE token = $1',
       values: [token],
@@ -21,8 +23,8 @@ const AuthenticationsTableTestHelper = {
     return result.rows;
   },
 
-  async cleanTable() {
-    await pool.query('DELETE FROM authentications WHERE 1=1');
+  async truncate() {
+    await pool.query('TRUNCATE TABLE authentications');
   },
 };
 

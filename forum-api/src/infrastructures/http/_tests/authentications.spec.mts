@@ -5,14 +5,14 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe.sequential('/authentications endpoint', () => {
+describe('/authentications endpoint', () => {
   afterAll(async () => {
     await pool.end();
   });
 
   afterEach(async () => {
-    await UsersTableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
+    await UsersTableTestHelper.truncate();
+    await AuthenticationsTableTestHelper.truncate();
   });
 
   describe('when POST /authentications', () => {
@@ -294,7 +294,7 @@ describe.sequential('/authentications endpoint', () => {
       // Arrange
       const server = await createServer(container);
       const refreshToken = 'refresh_token';
-      await AuthenticationsTableTestHelper.addToken(refreshToken);
+      await AuthenticationsTableTestHelper.add(refreshToken);
 
       // Action
       const response = await server.inject({

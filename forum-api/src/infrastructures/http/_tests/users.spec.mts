@@ -3,13 +3,13 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe.sequential('/users endpoint', () => {
+describe('/users endpoint', () => {
   afterAll(async () => {
     await pool.end();
   });
 
   afterEach(async () => {
-    await UsersTableTestHelper.cleanTable();
+    await UsersTableTestHelper.truncate();
   });
 
   describe('when POST /users', () => {
@@ -130,7 +130,7 @@ describe.sequential('/users endpoint', () => {
 
     it('should response 400 when username unavailable', async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ username: 'dicoding' });
+      await UsersTableTestHelper.add({ username: 'dicoding' });
       const requestPayload = {
         username: 'dicoding',
         fullname: 'Dicoding Indonesia',

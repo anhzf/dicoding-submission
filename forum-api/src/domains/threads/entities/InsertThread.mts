@@ -19,5 +19,5 @@ export default class InsertThread implements Out {
     Object.assign(this, this.#validated(attrs));
   }
 
-  #validated = createEntityValidator('INSERT_THREAD', Schema);
+  #validated = createEntityValidator('THREAD', Schema);
 }

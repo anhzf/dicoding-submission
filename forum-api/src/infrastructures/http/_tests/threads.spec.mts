@@ -5,11 +5,11 @@ import container from '../../container.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import createServer from '../createServer.mjs';
 
-describe.sequential('/threads endpoint', () => {
+describe('/threads endpoint', () => {
   afterEach(async () => {
-    await ThreadsTableTestHelper.cleanTableThread();
-    await UsersTableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
+    await ThreadsTableTestHelper.truncate();
+    await UsersTableTestHelper.truncate();
+    await AuthenticationsTableTestHelper.truncate();
   });
 
   afterAll(async () => {
