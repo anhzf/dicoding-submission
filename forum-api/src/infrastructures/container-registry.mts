@@ -1,4 +1,4 @@
-// interface ContainerRegistry {
+/* c8 ignore file */
 
 import type AuthenticationTokenManager from '../applications/security/AuthenticationTokenManager.mjs';
 import type PasswordHash from '../applications/security/PasswordHash.mjs';

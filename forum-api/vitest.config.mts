@@ -11,5 +11,8 @@ export default defineConfig({
         singleThread: true,
       },
     },
+    coverage: {
+      include: ['src/**/*.mts'],
+    },
   },
 });
