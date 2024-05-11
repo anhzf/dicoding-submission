@@ -18,7 +18,7 @@ describe('/authentications endpoint', () => {
   describe('when POST /authentications', () => {
     it('should response 201 and new authentication', async () => {
       const credential = {
-        username: nanoid(),
+        username: 'abcdefg',
         password: 'password',
       };
 
