@@ -20,7 +20,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
   async insert(payload: InsertComment) {
     const id = `comment-${this.#idGenerator()}`;
     const query = {
-      text: 'INSERT INTO threads_comments (id, thread_id, user_id, content) VALUES($1, $2, $3, $4) RETURNING id, thread_id, content, user_id',
+      text: 'INSERT INTO comments (id, thread_id, user_id, content) VALUES($1, $2, $3, $4) RETURNING id, thread_id, content, user_id',
       values: [
         id,
         payload.threadId,
@@ -51,7 +51,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
   async isExist(commentId: string): Promise<boolean> {
     const query = {
-      text: 'SELECT id from threads_comments WHERE id = $1',
+      text: 'SELECT id from comments WHERE id = $1',
       values: [commentId],
     };
 
@@ -62,7 +62,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
   async isOwned(commentId: string, ownerId: string) {
     const query = {
-      text: 'SELECT id from threads_comments WHERE user_id = $1 AND id = $2',
+      text: 'SELECT id from comments WHERE user_id = $1 AND id = $2',
       values: [ownerId, commentId],
     };
 
@@ -73,7 +73,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
   async destroy({ commentId }: DeleteComment) {
     const query = {
-      text: 'UPDATE threads_comments SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1',
+      text: 'UPDATE comments SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1',
       values: [commentId],
     };
 
@@ -84,9 +84,9 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
   async hasThreadOf(threadId: string) {
     const query = {
-      text: `SELECT threads_comments.*, users.username
-      FROM threads_comments LEFT JOIN users ON users.id = threads_comments.user_id
-      WHERE threads_comments.thread_id = $1
+      text: `SELECT comments.*, users.username
+      FROM comments LEFT JOIN users ON users.id = comments.user_id
+      WHERE comments.thread_id = $1
       ORDER BY date ASC`,
       values: [threadId],
     };
