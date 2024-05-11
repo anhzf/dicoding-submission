@@ -14,7 +14,8 @@
     "build": "tsc",
     "test": "vitest",
     "migrate": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json",
-    "migrate:test": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json -f config/test.json"
+    "migrate:test": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json -f config/test.json",
+    "lint": "eslint ./src/**/*.mts --fix"
   },
   "dependencies": {
     "@hapi/hapi": "^21.3.7",
@@ -27,14 +28,18 @@
     "valibot": "^0.30.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.2.0",
     "@types/bcrypt": "^5.0.2",
     "@vitest/coverage-v8": "^1.4.0",
     "concurrently": "^8.2.2",
     "config": "^3.3.11",
+    "eslint": "^8.57.0",
+    "globals": "^15.2.0",
     "node-pg-migrate": "^6.2.2",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0",
     "vitest": "^1.4.0"
   }
 }

@@ -1,4 +1,4 @@
-import { object, parse, string, type Input, type Output } from 'valibot';
+import { object, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({

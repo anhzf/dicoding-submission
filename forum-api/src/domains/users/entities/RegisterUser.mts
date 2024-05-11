@@ -1,4 +1,4 @@
-import { maxLength, object, parse, regex, string, type Input, type Output } from 'valibot';
+import { maxLength, object, regex, string, type Input, type Output } from 'valibot';
 import { createEntityValidator } from '../../../commons/utils/entity.mjs';
 
 const Schema = object({

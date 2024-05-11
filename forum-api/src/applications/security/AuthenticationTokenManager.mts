@@ -9,5 +9,5 @@ export default abstract class AuthenticationTokenManager {
 
   abstract verifyRefreshToken(token: string): Promise<void>;
 
-  abstract decodePayload(token: string): Promise<any>;
+  abstract decodePayload(token: string): Promise<Record<string, unknown>>;
 }
