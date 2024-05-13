@@ -27,7 +27,6 @@ jobs:
           script: |
             cd /home/ASUS/repos/dicoding-submission/forum-api
             git pull
-            source ~/.bashrc
             npm ci
             npm run build
             npm run migrate up
