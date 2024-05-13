@@ -20,7 +20,6 @@ export default class GetDetailThreadUseCase {
 
   async execute(threadId: string) {
     const thread = await this.#threadRepository.get(threadId);
-    if (!thread) throw new NotFoundError(`threadId ${threadId} tidak ditemukan`);
 
     const comments = await this.#commentRepository.hasThreadOf(threadId);
 

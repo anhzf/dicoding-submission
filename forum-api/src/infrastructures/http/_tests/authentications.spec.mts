@@ -83,13 +83,14 @@ describe('/authentications endpoint', () => {
 
     it('should response 401 if password wrong', async () => {
       const credential = {
-        username: nanoid(),
+        username: 'dicoding',
         password: 'password',
       };
 
       // Arrange
       const requestPayload = {
         ...credential,
+        // Provide wrong password
         password: 'wrong_password'
       };
 
@@ -171,7 +172,7 @@ describe('/authentications endpoint', () => {
   describe('when PUT /authentications', () => {
     it('should return 200 and new access token', async () => {
       const credential = {
-        username: nanoid(),
+        username: 'dicoding',
         password: 'password',
       };
 

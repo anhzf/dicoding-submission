@@ -12,7 +12,7 @@
     "dev:compile": "tsc -w",
     "dev:start": "nodemon dist/src/app.mjs",
     "build": "tsc",
-    "test": "vitest --coverage",
+    "test": "vitest run --coverage",
     "migrate": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json",
     "migrate:test": "node-pg-migrate -j ts --tsconfig tsconfig.migrations.json -f config/test.json",
     "lint": "eslint ./src/**/*.mts --fix"

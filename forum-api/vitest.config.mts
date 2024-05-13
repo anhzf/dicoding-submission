@@ -13,6 +13,7 @@ export default defineConfig({
     },
     coverage: {
       include: ['src/**/*.mts'],
+      reporter: ['text', 'json', 'html'],
     },
   },
 });
