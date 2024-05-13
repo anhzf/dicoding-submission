@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "forum-api/**"
+  workflow_dispatch:
 
 jobs:
   deploy:
