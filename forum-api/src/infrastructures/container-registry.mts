@@ -12,7 +12,9 @@ import type GetDetailThreadUseCase from '../applications/use-cases/GetDetailThre
 import type LoginUserUseCase from '../applications/use-cases/LoginUserUseCase.mjs';
 import type LogoutUserUseCase from '../applications/use-cases/LogoutUserUseCase.mjs';
 import type RefreshAuthenticationUseCase from '../applications/use-cases/RefreshAuthenticationUseCase.mjs';
+import type ToggleCommentLikeUseCase from '../applications/use-cases/ToggleCommentLikeUseCase.mjs';
 import type AuthenticationRepository from '../domains/authentications/AuthenticationRepository.mjs';
+import type CommentLikeRepository from '../domains/commentLikes/CommentLikeRepository.mjs';
 import type CommentRepository from '../domains/comments/CommentRepository.mjs';
 import type ReplyRepository from '../domains/replies/ReplyRepository.mjs';
 import type ThreadRepository from '../domains/threads/ThreadRepository.mjs';
@@ -26,6 +28,7 @@ interface ServiceMap {
   threadRepository: ThreadRepository;
   commentRepository: CommentRepository;
   replyRepository: ReplyRepository;
+  commentLikeRepository: CommentLikeRepository;
   addUserUseCase: AddUserUseCase;
   loginUserUseCase: LoginUserUseCase;
   logoutUserUseCase: LogoutUserUseCase;
@@ -36,6 +39,7 @@ interface ServiceMap {
   deleteCommentUseCase: DeleteCommentUseCase;
   addReplyUseCase: AddReplyUseCase;
   deleteReplyUseCase: DeleteReplyUseCase;
+  toggleCommentLikeUseCase: ToggleCommentLikeUseCase;
 }
 
 interface ServiceRegister<K extends keyof ServiceMap> {

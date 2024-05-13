@@ -1,3 +1,5 @@
+import CommentLikeRepository from '../../../domains/commentLikes/CommentLikeRepository.mjs';
+import GetCommentLikesCount from '../../../domains/commentLikes/entities/GetCommentLikesCount.mjs';
 import CommentRepository from '../../../domains/comments/CommentRepository.mjs';
 import GetComment from '../../../domains/comments/entities/GetComment.mjs';
 import ReplyRepository from '../../../domains/replies/ReplyRepository.mjs';
@@ -26,6 +28,7 @@ describe('GetDetailThreadUseCase interface', () => {
           date: new Date('2021-08-08T07:22:33.555Z'),
           content: 'sebuah comment',
           deletedAt: null,
+          likeCount: 0,
           replies: [
             {
               id: firstReplyId,
@@ -49,6 +52,7 @@ describe('GetDetailThreadUseCase interface', () => {
           date: new Date('2021-08-08T07:26:21.338Z'),
           content: '**komentar telah dihapus**',
           deletedAt: new Date('2021-08-08T07:26:21.338Z'),
+          likeCount: 0,
           replies: [
             {
               id: firstReplyId,
@@ -75,6 +79,8 @@ describe('GetDetailThreadUseCase interface', () => {
     const mockCommentRepository = new CommentRepository();
     // @ts-expect-error
     const mockReplyRepository = new ReplyRepository();
+    // @ts-expect-error
+    const mockCommentLikeRepository = new CommentLikeRepository();
 
     mockThreadRepository.get = vitest.fn()
       .mockImplementation(() => Promise.resolve(
@@ -123,10 +129,17 @@ describe('GetDetailThreadUseCase interface', () => {
         }),
       ]));
 
+    mockCommentLikeRepository.countByComment = vitest.fn()
+      .mockImplementation(() => Promise.resolve(new GetCommentLikesCount({
+        commentId: firstCommentId,
+        count: 0,
+      })));
+
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      commentLikeRepository: mockCommentLikeRepository,
     });
 
     const threads = await getDetailThreadUseCase.execute(threadId);
@@ -134,6 +147,7 @@ describe('GetDetailThreadUseCase interface', () => {
     expect(mockCommentRepository.hasThreadOf).toBeCalledWith(threadId);
     expect(mockReplyRepository.hasCommentOf).toBeCalledWith(firstCommentId);
     expect(mockReplyRepository.hasCommentOf).toBeCalledWith(secondCommentId);
+    expect(mockCommentLikeRepository.countByComment).toBeCalledWith(firstCommentId);
 
     expect(threads.id).toEqual(expectedDetailThread.id);
     expect(threads.username).toEqual(expectedDetailThread.username);

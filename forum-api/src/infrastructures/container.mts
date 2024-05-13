@@ -20,6 +20,8 @@ import DeleteCommentUseCase from '../applications/use-cases/DeleteCommentUseCase
 import AddReplyUseCase from '../applications/use-cases/AddReplyUseCase.mjs';
 import ReplyRepositoryPostgres from './repository/ReplyRepositoryPostgres.mjs';
 import DeleteReplyUseCase from '../applications/use-cases/DeleteReplyUseCase.mjs';
+import CommentLikeRepositoryPostgres from './repository/CommentLikeRepositoryPostgres.mjs';
+import ToggleCommentLikeUseCase from '../applications/use-cases/ToggleCommentLikeUseCase.mjs';
 
 export interface Container {
   get: typeof containerRegistry.get;
@@ -32,6 +34,7 @@ containerRegistry.register('authenticationRepository', () => new AuthenticationR
 containerRegistry.register('threadRepository', () => new ThreadRepositoryPostgres(pool, nanoid));
 containerRegistry.register('commentRepository', () => new CommentRepositoryPostgres(pool, nanoid));
 containerRegistry.register('replyRepository', () => new ReplyRepositoryPostgres(pool, nanoid));
+containerRegistry.register('commentLikeRepository', () => new CommentLikeRepositoryPostgres(pool, nanoid));
 
 containerRegistry.register('addUserUseCase', () => new AddUserUseCase({
   userRepository: containerRegistry.get('userRepository'),
@@ -57,6 +60,7 @@ containerRegistry.register('getDetailThreadUseCase', () => new GetDetailThreadUs
   threadRepository: containerRegistry.get('threadRepository'),
   commentRepository: containerRegistry.get('commentRepository'),
   replyRepository: containerRegistry.get('replyRepository'),
+  commentLikeRepository: containerRegistry.get('commentLikeRepository'),
 }));
 containerRegistry.register('addCommentUseCase', () => new AddCommentUseCase({
   commentRepository: containerRegistry.get('commentRepository'),
@@ -75,6 +79,9 @@ containerRegistry.register('deleteReplyUseCase', () => new DeleteReplyUseCase({
   replyRepository: containerRegistry.get('replyRepository'),
   threadRepository: containerRegistry.get('threadRepository'),
   commentRepository: containerRegistry.get('commentRepository'),
+}));
+containerRegistry.register('toggleCommentLikeUseCase', () => new ToggleCommentLikeUseCase({
+  commentLikeRepository: containerRegistry.get('commentLikeRepository'),
 }));
 
 const container: Container = {

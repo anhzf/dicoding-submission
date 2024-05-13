@@ -9,6 +9,7 @@ import ThreadsPlugin from '../../interfaces/http/api/threads/index.mjs';
 import UsersPlugin from '../../interfaces/http/api/users/index.mjs';
 import type { Container } from '../container.mjs';
 import RepliesPlugin from '../../interfaces/http/api/replies/index.mjs';
+import CommentLikesPlugin from '../../interfaces/http/api/commentLikes/index.mjs';
 
 declare global {
   interface Error {
@@ -62,6 +63,10 @@ const createServer = async (container: Container) => {
     },
     {
       plugin: RepliesPlugin,
+      options: { container },
+    },
+    {
+      plugin: CommentLikesPlugin,
       options: { container },
     },
   ]);
