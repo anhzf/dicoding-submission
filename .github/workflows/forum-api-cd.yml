@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: SSH and deploy app
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.FORUM_API_SSH_HOST }}
           username: ${{ secrets.FORUM_API_SSH_USERNAME }}
