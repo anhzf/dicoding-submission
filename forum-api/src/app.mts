@@ -1,8 +1,6 @@
-import { configDotenv } from 'dotenv';
-import createServer from './infrastructures/http/createServer.mjs';
+import 'dotenv/config';
 import container from './infrastructures/container.mjs';
-
-configDotenv();
+import createServer from './infrastructures/http/createServer.mjs';
 
 (async () => {
   const server = await createServer(container);
