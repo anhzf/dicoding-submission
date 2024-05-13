@@ -24,7 +24,7 @@ jobs:
           key: ${{ secrets.FORUM_API_SSH_KEY }}
           port: ${{ secrets.FORUM_API_SSH_PORT }}
           script: |
-            cd /home/ASUS/dicoding-submission/forum-api
+            cd /home/ASUS/repos/dicoding-submission/forum-api
             git pull
             npm ci
             npm run build
