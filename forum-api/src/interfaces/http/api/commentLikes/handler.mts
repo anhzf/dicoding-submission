@@ -10,13 +10,13 @@ export default class CommentLikesHandler {
 
   async put(request: Request, h: ResponseToolkit) {
     const credential = request.auth.credentials;
-    const { commentId } = request.params;
+    const { threadId, commentId } = request.params;
 
-    const likeComment = this.#container.get('toggleCommentLikeUseCase');
-    await likeComment.execute({ commentId, userId: credential.id as string });
+    const action = this.#container.get('toggleCommentLikeUseCase');
+    await action.execute({ threadId, commentId, userId: credential.id as string });
 
-    return {
+    return h.response({
       status: 'success',
-    };
+    });
   }
 }

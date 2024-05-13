@@ -82,6 +82,8 @@ containerRegistry.register('deleteReplyUseCase', () => new DeleteReplyUseCase({
 }));
 containerRegistry.register('toggleCommentLikeUseCase', () => new ToggleCommentLikeUseCase({
   commentLikeRepository: containerRegistry.get('commentLikeRepository'),
+  threadRepository: containerRegistry.get('threadRepository'),
+  commentRepository: containerRegistry.get('commentRepository'),
 }));
 
 const container: Container = {
