@@ -1,9 +1,9 @@
 {
   "db": {
-    "user": "anhzf",
-    "password": "devpsql",
-    "host": "localhost",
-    "port": 5432,
-    "database": "forumdb"
+    "// user": "anhzf",
+    "// password": "devpsql",
+    "// host": "localhost",
+    "// port": 5432,
+    "// database": "forumdb"
   }
 }

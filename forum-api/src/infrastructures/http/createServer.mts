@@ -66,6 +66,16 @@ const createServer = async (container: Container) => {
     },
   ]);
 
+  server.route([
+    {
+      path: '/',
+      method: '*',
+      handler: (req, h) => h.response({
+        status: 'success', message: 'Welcome to Forum API!',
+      }),
+    },
+  ])
+
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;

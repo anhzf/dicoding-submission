@@ -67,4 +67,23 @@ describe('HTTP server', () => {
     expect(responseJson.message).toEqual('terjadi kegagalan pada server kami');
     expect(responseJson.data).toBeNull();
   });
+
+  it('has a welcome message', async () => {
+    // Arrange
+    // @ts-expect-error
+    const server = await createServer({});
+
+    // Action
+    const response = await server.inject({
+      method: 'GET',
+      url: '/',
+    });
+
+    // Assert
+    expect(response.statusCode).toEqual(200);
+    expect(JSON.parse(response.payload)).toEqual({
+      status: 'success',
+      message: 'Welcome to Forum API!',
+    });
+  });
 });
