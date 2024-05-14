@@ -25,10 +25,9 @@ jobs:
           key: ${{ secrets.FORUM_API_SSH_KEY }}
           port: ${{ secrets.FORUM_API_SSH_PORT }}
           script: |
-            sudo su
             cd /repos/dicoding-submission/forum-api
-            git pull
-            npm ci
-            npm run build
-            npm run migrate up
-            pm2 restart forum-api
+            sudo git pull
+            sudo npm ci
+            sudo npm run build
+            sudo npm run migrate up
+            sudo pm2 restart forum-api
