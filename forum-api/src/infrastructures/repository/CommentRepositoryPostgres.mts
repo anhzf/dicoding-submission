@@ -6,6 +6,7 @@ import type DeleteComment from '../../domains/comments/entities/DeleteComment.mj
 import GetComment from '../../domains/comments/entities/GetComment.mjs';
 import type InsertComment from '../../domains/comments/entities/InsertComment.mjs';
 import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
+import AuthorizationError from '../../commons/exceptions/AuthorizationError.mjs';
 
 export default class CommentRepositoryPostgres extends CommentRepository {
   #pool: Pool;
@@ -49,7 +50,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  async isExist(commentId: string): Promise<boolean> {
+  async isExist(commentId: string): Promise<void> {
     const query = {
       text: 'SELECT id from comments WHERE id = $1',
       values: [commentId],
@@ -57,7 +58,8 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
     const { rowCount } = await this.#pool.query(query);
 
-    return !!rowCount;
+    if (!rowCount) throw new NotFoundError('comment not found');
+    ;
   }
 
   async isOwned(commentId: string, ownerId: string) {
@@ -68,7 +70,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
 
     const { rowCount } = await this.#pool.query(query);
 
-    return !!rowCount;
+    if (!rowCount) throw new AuthorizationError('You are not authorized to do an action to this comment');
   }
 
   async destroy({ commentId }: DeleteComment) {

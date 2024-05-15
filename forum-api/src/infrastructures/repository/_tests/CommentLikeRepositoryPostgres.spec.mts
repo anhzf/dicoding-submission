@@ -2,6 +2,7 @@ import CommentLikesTableTestHelper from '../../../../tests/CommentLikesTableTest
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.mjs';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.mjs';
 import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
+import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import CommentLike from '../../../domains/commentLikes/entities/CommentLike.mjs';
 import GetCommentLikesCount from '../../../domains/commentLikes/entities/GetCommentLikesCount.mjs';
 import SetCommentLike from '../../../domains/commentLikes/entities/SetCommentLike.mjs';
@@ -39,27 +40,27 @@ describe('CommentLikeRepositoryPostgres', () => {
   });
 
   describe('.isExist()', () => {
-    it('should return true if comment like exists', async () => {
+    it('should resolves if comment like exists', async () => {
       // Arrange
       const commentLikeRepositoryPostgres = new CommentLikeRepositoryPostgres(pool, idGenerator);
       await CommentLikesTableTestHelper.add(COMMENT_LIKE);
 
       // Action
-      const isExist = await commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
+      const result = commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
 
       // Assert
-      expect(isExist).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false if comment like does not exist', async () => {
+    it('should throws NotFoundError if comment like does not exist', async () => {
       // Arrange
       const commentLikeRepositoryPostgres = new CommentLikeRepositoryPostgres(pool, idGenerator);
 
       // Action
-      const isExist = await commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
+      const result = commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
 
       // Assert
-      expect(isExist).toBe(false);
+      await expect(result).rejects.toThrowError(NotFoundError);
     });
   });
 
@@ -72,8 +73,8 @@ describe('CommentLikeRepositoryPostgres', () => {
       await commentLikeRepositoryPostgres.set(new SetCommentLike(COMMENT_LIKE));
 
       // Assert
-      const isExist = await commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
-      expect(isExist).toBe(true);
+      await expect(commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE)))
+        .resolves.not.toThrowError();
     });
   });
 
@@ -81,14 +82,14 @@ describe('CommentLikeRepositoryPostgres', () => {
     it('should persist unset comment like', async () => {
       // Arrange
       const commentLikeRepositoryPostgres = new CommentLikeRepositoryPostgres(pool, idGenerator);
-      await CommentLikesTableTestHelper.add(COMMENT_LIKE);
+      const added = await CommentLikesTableTestHelper.add(COMMENT_LIKE);
 
       // Action
       await commentLikeRepositoryPostgres.unset(new SetCommentLike(COMMENT_LIKE));
 
       // Assert
-      const isExist = await commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
-      expect(isExist).toBe(false);
+      await expect(commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE)))
+        .rejects.toThrowError(NotFoundError);
     });
   });
 

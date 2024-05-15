@@ -3,6 +3,7 @@ import CommentLikeRepository from '../../domains/commentLikes/CommentLikeReposit
 import type CommentLike from '../../domains/commentLikes/entities/CommentLike.mjs';
 import type SetCommentLike from '../../domains/commentLikes/entities/SetCommentLike.mjs';
 import GetCommentLikesCount from '../../domains/commentLikes/entities/GetCommentLikesCount.mjs';
+import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 
 export default class CommentLikeRepositoryPostgres extends CommentLikeRepository {
   #pool: Pool;
@@ -22,7 +23,7 @@ export default class CommentLikeRepositoryPostgres extends CommentLikeRepository
 
     const { rowCount } = await this.#pool.query(query);
 
-    return !!rowCount;
+    if (!rowCount) throw new NotFoundError('comment like not found');
   }
 
   async set(commentLike: SetCommentLike) {

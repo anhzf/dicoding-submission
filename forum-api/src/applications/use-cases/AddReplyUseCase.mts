@@ -1,4 +1,3 @@
-import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 import type CommentRepository from '../../domains/comments/CommentRepository.mjs';
 import type ReplyRepository from '../../domains/replies/ReplyRepository.mjs';
 import InsertReply from '../../domains/replies/entities/InsertReply.mjs';
@@ -22,13 +21,8 @@ export default class AddReplyUseCase {
   async execute(useCasePayload: Omit<InsertReply, 'userId'>, credential: AuthenticatedUser) {
     const { threadId, commentId, content } = useCasePayload;
 
-    if (!(await this.#threadRepository.isExist(threadId))) {
-      throw new NotFoundError('thread not found');
-    }
-
-    if (!(await this.#commentRepository.isExist(commentId))) {
-      throw new NotFoundError('comment not found');
-    }
+    await this.#threadRepository.isExist(threadId);
+    await this.#commentRepository.isExist(commentId);
 
     return this.#replyRepository.insert(new InsertReply({
       userId: credential.id,

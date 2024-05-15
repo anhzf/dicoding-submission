@@ -34,7 +34,7 @@ export default class ThreadRepositoryPostgres extends ThreadRepository {
     };
     const result = await this.#pool.query(query);
 
-    return !!result.rowCount;
+    if (!result.rowCount) throw new NotFoundError('thread not found');
   }
 
   async get(threadId: string) {

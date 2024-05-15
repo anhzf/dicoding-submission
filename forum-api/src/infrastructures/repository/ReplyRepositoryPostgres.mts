@@ -4,6 +4,8 @@ import AddedReply from '../../domains/replies/entities/AddedReply.mjs';
 import type DeleteReply from '../../domains/replies/entities/DeleteReply.mjs';
 import GetReply from '../../domains/replies/entities/GetReply.mjs';
 import type InsertReply from '../../domains/replies/entities/InsertReply.mjs';
+import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
+import AuthorizationError from '../../commons/exceptions/AuthorizationError.mjs';
 
 export default class ReplyRepositoryPostgres extends ReplyRepository {
   #pool: Pool;
@@ -61,23 +63,24 @@ export default class ReplyRepositoryPostgres extends ReplyRepository {
     }));
   }
 
-  async isExist(replyId: string): Promise<boolean> {
+  async isExist(replyId: string): Promise<void> {
     const query: QueryConfig = {
       text: 'SELECT id FROM replies WHERE id = $1',
       values: [replyId],
     };
     const result = await this.#pool.query(query);
 
-    return !!result.rowCount;
+    if (!result.rowCount) throw new NotFoundError('reply not found');
+    ;
   }
 
-  async isOwned(replyId: string, userId: string): Promise<boolean> {
+  async isOwned(replyId: string, userId: string): Promise<void> {
     const query: QueryConfig = {
       text: 'SELECT id FROM replies WHERE id = $1 AND user_id = $2',
       values: [replyId, userId],
     };
     const result = await this.#pool.query(query);
 
-    return !!result.rowCount;
+    if (!result.rowCount) throw new AuthorizationError('you are not authorized to do an action to this reply');
   }
 }

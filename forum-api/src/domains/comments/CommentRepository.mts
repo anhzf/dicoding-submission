@@ -5,12 +5,8 @@ import type InsertComment from './entities/InsertComment.mjs';
 
 export default abstract class CommentRepository {
   abstract insert(payload: InsertComment): Promise<AddedComment>;
-
-  abstract isExist(commentId: string): Promise<boolean>;
-
-  abstract isOwned(commentId: string, ownerId: string): Promise<boolean>;
-
+  abstract isExist(commentId: string): Promise<void>;
+  abstract isOwned(commentId: string, ownerId: string): Promise<void>;
   abstract destroy(payload: DeleteComment): Promise<void>;
-
   abstract hasThreadOf(threadId: string): Promise<GetComment[]>;
 }

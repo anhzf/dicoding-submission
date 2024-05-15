@@ -25,16 +25,16 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockReplyRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.isOwned = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.delete = vitest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -75,7 +75,7 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('thread not found')));
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
@@ -86,7 +86,7 @@ describe('DeleteReplyUseCase', () => {
 
     // action & assert
     await expect(deleteReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(NotFoundError);
+      .rejects.toThrow(NotFoundError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
   });
@@ -109,9 +109,9 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('comment not found')));
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
@@ -122,7 +122,7 @@ describe('DeleteReplyUseCase', () => {
 
     // action & assert
     await expect(deleteReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(NotFoundError);
+      .rejects.toThrow(NotFoundError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(useCasePayload.commentId);
@@ -146,11 +146,11 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockReplyRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('reply not found')));
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
@@ -161,7 +161,7 @@ describe('DeleteReplyUseCase', () => {
 
     // action & assert
     await expect(deleteReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(NotFoundError);
+      .rejects.toThrow(NotFoundError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(useCasePayload.commentId);
@@ -186,13 +186,13 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockReplyRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockReplyRepository.isOwned = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new AuthorizationError('you are not authorized')));
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
@@ -203,7 +203,7 @@ describe('DeleteReplyUseCase', () => {
 
     // action & assert
     await expect(deleteReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(AuthorizationError);
+      .rejects.toThrow(AuthorizationError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(useCasePayload.commentId);

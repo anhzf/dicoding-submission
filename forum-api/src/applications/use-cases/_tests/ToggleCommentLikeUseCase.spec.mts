@@ -1,3 +1,4 @@
+import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import CommentLikeRepository from '../../../domains/commentLikes/CommentLikeRepository.mjs';
 import CommentLike from '../../../domains/commentLikes/entities/CommentLike.mjs';
 import SetCommentLike from '../../../domains/commentLikes/entities/SetCommentLike.mjs';
@@ -34,13 +35,13 @@ describe('ToggleCommentLikeUseCase', () => {
 
     /** mocking needed function */
     mockCommentLikeRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('comment like not found')));
     mockCommentLikeRepository.set = vitest.fn()
       .mockImplementation(() => Promise.resolve());
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const toggleCommentLikeUseCase = new ToggleCommentLikeUseCase({
@@ -52,7 +53,7 @@ describe('ToggleCommentLikeUseCase', () => {
     // action
     const result = toggleCommentLikeUseCase.execute(useCasePayload);
 
-    await expect(result).resolves.not.toThrowError();
+    await expect(result).resolves.not.toThrow();
     expect(mockCommentLikeRepository.isExist).toBeCalledWith(commentLike);
     expect(mockCommentLikeRepository.set).toBeCalledWith(setCommentLike);
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
@@ -87,13 +88,13 @@ describe('ToggleCommentLikeUseCase', () => {
 
     /** mocking needed function */
     mockCommentLikeRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentLikeRepository.unset = vitest.fn()
       .mockImplementation(() => Promise.resolve());
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const toggleCommentLikeUseCase = new ToggleCommentLikeUseCase({
@@ -105,7 +106,7 @@ describe('ToggleCommentLikeUseCase', () => {
     // action
     const result = toggleCommentLikeUseCase.execute(useCasePayload);
 
-    await expect(result).resolves.not.toThrowError();
+    await expect(result).resolves.not.toThrow();
     expect(mockCommentLikeRepository.isExist).toBeCalledWith(commentLike);
     expect(mockCommentLikeRepository.unset).toBeCalledWith(setCommentLike);
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
@@ -130,7 +131,7 @@ describe('ToggleCommentLikeUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.reject(new NotFoundError('thread not found')));
 
     /** creating use case instance */
     const toggleCommentLikeUseCase = new ToggleCommentLikeUseCase({
@@ -142,7 +143,7 @@ describe('ToggleCommentLikeUseCase', () => {
     // action
     const result = toggleCommentLikeUseCase.execute(useCasePayload);
 
-    await expect(result).rejects.toThrowError('Thread tidak ditemukan');
+    await expect(result).rejects.toThrow(NotFoundError);
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
   });
 
@@ -164,9 +165,9 @@ describe('ToggleCommentLikeUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.reject(new NotFoundError('comment not found')));
 
     /** creating use case instance */
     const toggleCommentLikeUseCase = new ToggleCommentLikeUseCase({
@@ -178,7 +179,7 @@ describe('ToggleCommentLikeUseCase', () => {
     // action
     const result = toggleCommentLikeUseCase.execute(useCasePayload);
 
-    await expect(result).rejects.toThrowError('Komentar tidak ditemukan');
+    await expect(result).rejects.toThrow(NotFoundError);
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(useCasePayload.commentId);
   });

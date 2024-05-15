@@ -7,16 +7,18 @@ const CommentLikesTableTestHelper = {
     userId = 'user-123',
   }) {
     const query = {
-      text: 'INSERT INTO comment_likes VALUES($1, $2, $3)',
+      text: 'INSERT INTO comment_likes VALUES($1, $2, $3) RETURNING *',
       values: [id, commentId, userId],
     };
 
-    await pool.query(query);
+    const { rows } = await pool.query(query);
+
+    return rows[0];
   },
 
   async truncate() {
     await pool.query('TRUNCATE TABLE comment_likes CASCADE');
-  }
+  },
 };
 
 export default CommentLikesTableTestHelper;

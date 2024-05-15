@@ -59,27 +59,27 @@ describe('ThreadRepositoryPostgres', () => {
   });
 
   describe('.isExist()', () => {
-    it('should return true if thread exists', async () => {
+    it('should resolves if thread exists', async () => {
       // Arrange
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, () => '123');
       await ThreadsTableTestHelper.add(THREAD);
 
       // Action
-      const isExist = await threadRepositoryPostgres.isExist(id);
+      const result = threadRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false if thread does not exist', async () => {
+    it('should throws NotFoundError if thread does not exist', async () => {
       // Arrange
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, () => '123');
 
       // Action
-      const isExist = await threadRepositoryPostgres.isExist(id);
+      const result = threadRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(false);
+      await expect(result).rejects.toThrowError(NotFoundError);
     });
   });
 

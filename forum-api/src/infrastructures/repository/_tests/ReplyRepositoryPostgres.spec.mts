@@ -2,6 +2,8 @@ import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.m
 import RepliesTableTestHelper from '../../../../tests/RepliesTableTestHelper.mjs';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.mjs';
 import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
+import AuthorizationError from '../../../commons/exceptions/AuthorizationError.mjs';
+import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import DeleteReply from '../../../domains/replies/entities/DeleteReply.mjs';
 import InsertReply from '../../../domains/replies/entities/InsertReply.mjs';
 import pool from '../../database/postgres/pool.mjs';
@@ -96,53 +98,53 @@ describe('ReplyRepositoryPostgres', async () => {
   });
 
   describe('.isExist()', () => {
-    it('should return true when reply is exist', async () => {
+    it('should resolves when reply is exist', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => '123');
       await RepliesTableTestHelper.add(REPLY);
 
       // Action
-      const isExist = await replyRepositoryPostgres.isExist(id);
+      const result = replyRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false when reply is not exist', async () => {
+    it('should throws NotFoundError when reply is not exist', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => '123');
 
       // Action
-      const isExist = await replyRepositoryPostgres.isExist(id);
+      const result = replyRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(false);
+      await expect(result).rejects.toThrowError(NotFoundError);
     });
   });
 
   describe('.isOwned()', () => {
-    it('should return true when reply is owned by user', async () => {
+    it('should resolves when reply is owned by user', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => '123');
       await RepliesTableTestHelper.add(REPLY);
 
       // Action
-      const isOwned = await replyRepositoryPostgres.isOwned(id, userId);
+      const result = replyRepositoryPostgres.isOwned(id, userId);
 
       // Assert
-      expect(isOwned).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false when reply is not owned by user', async () => {
+    it('should throws AuthorizationError when reply is not owned by user', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => '123');
       await RepliesTableTestHelper.add(REPLY);
 
       // Action
-      const isOwned = await replyRepositoryPostgres.isOwned(id, 'user-321');
+      const result = replyRepositoryPostgres.isOwned(id, 'user-321');
 
       // Assert
-      expect(isOwned).toBe(false);
+      await expect(result).rejects.toThrowError(AuthorizationError);
     });
   });
 });

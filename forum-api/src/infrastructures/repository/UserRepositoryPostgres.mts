@@ -22,9 +22,7 @@ export default class UserRepositoryPostgres extends UserRepository {
 
     const result = await this.#pool.query(query);
 
-    if (result.rowCount) {
-      throw new InvariantError('username tidak tersedia');
-    }
+    if (result.rowCount) throw new InvariantError('username tidak tersedia');
   }
 
   async create(registerUser: RegisterUser) {

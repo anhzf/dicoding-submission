@@ -82,7 +82,7 @@ describe('AddReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('thread not found')));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
@@ -92,7 +92,7 @@ describe('AddReplyUseCase', () => {
     });
 
     await expect(addReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(NotFoundError);
+      .rejects.toThrow(NotFoundError);
     expect(mockThreadRepository.isExist).toBeCalledWith(threadId);
   });
 
@@ -116,9 +116,9 @@ describe('AddReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('comment not found')));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
@@ -128,7 +128,7 @@ describe('AddReplyUseCase', () => {
     });
 
     await expect(addReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrowError(NotFoundError);
+      .rejects.toThrow(NotFoundError);
     expect(mockThreadRepository.isExist).toBeCalledWith(threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(commentId);
   });

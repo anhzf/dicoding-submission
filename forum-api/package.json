@@ -32,7 +32,6 @@
     "@types/bcrypt": "^5.0.2",
     "@vitest/coverage-v8": "^1.4.0",
     "concurrently": "^8.2.2",
-    "config": "^3.3.11",
     "eslint": "^8.57.0",
     "globals": "^15.2.0",
     "node-pg-migrate": "^6.2.2",

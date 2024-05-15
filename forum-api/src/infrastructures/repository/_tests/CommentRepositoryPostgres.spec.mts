@@ -1,6 +1,7 @@
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.mjs';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.mjs';
 import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
+import AuthorizationError from '../../../commons/exceptions/AuthorizationError.mjs';
 import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import DeleteComment from '../../../domains/comments/entities/DeleteComment.mjs';
 import InsertComment from '../../../domains/comments/entities/InsertComment.mjs';
@@ -85,53 +86,53 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('.isExist()', () => {
-    it('should return true if comment exists', async () => {
+    it('should resolves if comment exists', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
       await CommentsTableTestHelper.add(COMMENT);
 
       // Action
-      const isExist = await commentRepositoryPostgres.isExist(id);
+      const result = commentRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false if comment does not exist', async () => {
+    it('should throws NotFoundError if comment does not exist', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
 
       // Action
-      const isExist = await commentRepositoryPostgres.isExist(id);
+      const result = commentRepositoryPostgres.isExist(id);
 
       // Assert
-      expect(isExist).toBe(false);
+      await expect(result).rejects.toThrowError(NotFoundError);
     });
   });
 
   describe('.isOwned()', () => {
-    it('should return true if comment is owned by user', async () => {
+    it('should resolves if comment is owned by user', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
       await CommentsTableTestHelper.add(COMMENT);
 
       // Action
-      const isOwned = await commentRepositoryPostgres.isOwned(id, userId);
+      const result = commentRepositoryPostgres.isOwned(id, userId);
 
       // Assert
-      expect(isOwned).toBe(true);
+      await expect(result).resolves.not.toThrowError();
     });
 
-    it('should return false if comment is not owned by user', async () => {
+    it('should throws AuthorizationError if comment is not owned by user', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
       await CommentsTableTestHelper.add(COMMENT);
 
       // Action
-      const isOwned = await commentRepositoryPostgres.isOwned(id, 'user-456');
+      const result = commentRepositoryPostgres.isOwned(id, 'user-456');
 
       // Assert
-      expect(isOwned).toBe(false);
+      await expect(result).rejects.toThrowError(AuthorizationError);
     });
   });
 

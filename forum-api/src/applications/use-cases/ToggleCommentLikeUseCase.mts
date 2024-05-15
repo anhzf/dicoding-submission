@@ -25,18 +25,15 @@ export default class ToggleCommentLikeUseCase {
     const commentLike = new CommentLike({ commentId, userId });
     const setCommentLike = new SetCommentLike({ commentId, userId });
 
-    if (!(await this.#threadRepository.isExist(threadId))) {
-      throw new NotFoundError('Thread tidak ditemukan');
-    }
+    await this.#threadRepository.isExist(threadId);
+    await this.#commentRepository.isExist(commentId);
 
-    if (!(await this.#commentRepository.isExist(commentId))) {
-      throw new NotFoundError('Komentar tidak ditemukan');
-    }
-
-    if (await this.#commentLikeRepository.isExist(commentLike)) {
+    try {
+      await this.#commentLikeRepository.isExist(commentLike);
       return this.#commentLikeRepository.unset(setCommentLike);
+    } catch (err) {
+      if (err instanceof NotFoundError) return this.#commentLikeRepository.set(setCommentLike);
+      throw err;
     }
-
-    return this.#commentLikeRepository.set(setCommentLike);
   }
 }

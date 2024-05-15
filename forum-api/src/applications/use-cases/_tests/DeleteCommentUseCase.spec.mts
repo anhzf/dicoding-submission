@@ -1,3 +1,5 @@
+import AuthorizationError from '../../../commons/exceptions/AuthorizationError.mjs';
+import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import CommentRepository from '../../../domains/comments/CommentRepository.mjs';
 import ThreadRepository from '../../../domains/threads/ThreadRepository.mjs';
 import DeletedCommentUseCase from '../DeleteCommentUseCase.mjs';
@@ -16,11 +18,11 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isOwned = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.destroy = vitest.fn()
       .mockImplementation(() => Promise.resolve({ status: 'success' }));
 
@@ -55,7 +57,7 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('thread not found')));
 
     const deleteCommentUseCase = new DeletedCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -63,7 +65,7 @@ describe('DeleteCommentUseCase', () => {
     });
 
     await expect(deleteCommentUseCase.execute(useCasePayload))
-      .rejects.toThrow('thread not found');
+      .rejects.toThrow(NotFoundError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
   });
@@ -81,9 +83,9 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new NotFoundError('comment not found')));
 
     const deleteCommentUseCase = new DeletedCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -110,11 +112,11 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.isOwned = vitest.fn()
-      .mockImplementation(() => Promise.resolve(false));
+      .mockImplementation(() => Promise.reject(new AuthorizationError('you are not authorized')));
 
     const deleteCommentUseCase = new DeletedCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -122,7 +124,7 @@ describe('DeleteCommentUseCase', () => {
     });
 
     await expect(deleteCommentUseCase.execute(useCasePayload))
-      .rejects.toThrow('comment not owned');
+      .rejects.toThrow(AuthorizationError);
 
     expect(mockThreadRepository.isExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.isExist).toBeCalledWith(useCasePayload.commentId);

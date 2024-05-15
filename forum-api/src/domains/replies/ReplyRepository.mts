@@ -7,6 +7,6 @@ export default abstract class ReplyRepository {
   abstract insert(reply: InsertReply): Promise<AddedReply>;
   abstract delete(reply: DeleteReply): Promise<void>;
   abstract hasCommentOf(commentId: string): Promise<GetReply[]>;
-  abstract isExist(replyId: string): Promise<boolean>;
-  abstract isOwned(replyId: string, userId: string): Promise<boolean>;
+  abstract isExist(replyId: string): Promise<void>;
+  abstract isOwned(replyId: string, userId: string): Promise<void>;
 }
