@@ -1,5 +1,5 @@
 import { object, string } from 'valibot';
-import { createEntityValidator } from './entity.mjs';
+import { createEntityValidator } from '../entity.mjs';
 
 describe('Entity utilities', () => {
   describe('createEntityValidator()', () => {
@@ -16,7 +16,7 @@ describe('Entity utilities', () => {
 
       // Action & Assert
       // @ts-expect-error
-      expect(() => validator(input)).toThrowError(`${entityName}.NOT_CONTAIN_NEEDED_PROPERTY`);
+      expect(() => validator(input)).toThrow(`${entityName}.NOT_CONTAIN_NEEDED_PROPERTY`);
     });
 
     it('should return parsed input when input contain needed property', () => {

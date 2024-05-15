@@ -60,7 +60,7 @@ describe('UserRepositoryPostgres', () => {
 
       // Assert
       const user = await UsersTableTestHelper.get(id);
-      expect(user).to.not.toBeUndefined();
+      expect(user).not.toBeUndefined();
     });
 
     it('should return registered user correctly', async () => {

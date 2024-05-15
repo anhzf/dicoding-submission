@@ -243,7 +243,7 @@ describe('/replies endpoint', () => {
       });
       const result = await RepliesTableTestHelper.get(replyId);
       expect(response.statusCode).toEqual(200);
-      expect(result.deleted_at).to.not.toBeNull();
+      expect(result.deleted_at).not.toBeNull();
     });
   });
 

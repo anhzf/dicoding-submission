@@ -39,7 +39,7 @@ describe('HTTP server', () => {
     expect(response.statusCode).toEqual(500);
     expect(responseJson.status).toEqual('error');
     expect(responseJson.message).toEqual('terjadi kegagalan pada server kami');
-    expect(responseJson.data).to.not.toBeNull();
+    expect(responseJson.data).not.toBeNull();
   });
 
   it('should handle server error with no data when in production', async () => {
