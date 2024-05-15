@@ -53,36 +53,6 @@ describe('CommentRepositoryPostgres', () => {
       expect(addedComment.content).toEqual(commentInDatabase.content);
       expect(addedComment.ownerId).toEqual(commentInDatabase.user_id);
     });
-
-    it('should throw NotFoundError when inserting comment with unavailable thread', async () => {
-      // Arrange
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
-      const comment = new InsertComment({
-        content,
-        ownerId: userId,
-        threadId: 'thread-456',
-      });
-
-      // Action & Assert
-      await expect(commentRepositoryPostgres.insert(comment))
-        .rejects.toThrowError(NotFoundError);
-    });
-
-    // it('should throw Error when inserting comment with invalid input', async () => {
-    //   // Arrange
-    //   const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
-    //   const comment = new InsertComment({
-    //     content: '',
-    //     ownerId: userId,
-    //     threadId,
-    //   });
-    //   // @ts-expect-error
-    //   comment.content = new Date();
-
-    //   // Action & Assert
-    //   await expect(commentRepositoryPostgres.insert(comment))
-    //     .rejects.toThrowError();
-    // });
   });
 
   describe('.isExist()', () => {

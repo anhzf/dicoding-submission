@@ -15,8 +15,11 @@ export default class AddCommentUseCase {
 
   async execute(useCasePayload: Omit<InsertComment, never>) {
     const { content, threadId, ownerId } = useCasePayload;
+
     await this.#threadRepository.isExist(threadId);
-    const newComment = new InsertComment({ content, threadId, ownerId });
-    return this.#commentRepository.insert(newComment);
+
+    return this.#commentRepository.insert(new InsertComment({
+      content, threadId, ownerId,
+    }));
   }
 }

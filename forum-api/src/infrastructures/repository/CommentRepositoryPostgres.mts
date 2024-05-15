@@ -1,12 +1,11 @@
 import type { Pool } from 'pg';
-import { CONSTRAINT_VIOLATION_MAP } from '../../commons/exceptions/PostgresError.mjs';
+import AuthorizationError from '../../commons/exceptions/AuthorizationError.mjs';
+import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 import CommentRepository from '../../domains/comments/CommentRepository.mjs';
 import AddedComment from '../../domains/comments/entities/AddedComment.mjs';
 import type DeleteComment from '../../domains/comments/entities/DeleteComment.mjs';
 import GetComment from '../../domains/comments/entities/GetComment.mjs';
 import type InsertComment from '../../domains/comments/entities/InsertComment.mjs';
-import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
-import AuthorizationError from '../../commons/exceptions/AuthorizationError.mjs';
 
 export default class CommentRepositoryPostgres extends CommentRepository {
   #pool: Pool;
@@ -30,24 +29,19 @@ export default class CommentRepositoryPostgres extends CommentRepository {
       ],
     };
 
-    try {
-      const { rows } = await this.#pool.query(query);
+    const { rows } = await this.#pool.query(query);
 
-      const data = {
-        threadId: rows[0].thread_id,
+    const data = {
+      threadId: rows[0].thread_id,
 
-        ...rows[0],
-      };
+      ...rows[0],
+    };
 
-      return new AddedComment({
-        id: data.id,
-        content: data.content,
-        ownerId: data.user_id,
-      });
-    } catch (err: any) {
-      const translated = CONSTRAINT_VIOLATION_MAP[err.code]?.('comment', 'thread');
-      throw translated || err;
-    }
+    return new AddedComment({
+      id: data.id,
+      content: data.content,
+      ownerId: data.user_id,
+    });
   }
 
   async isExist(commentId: string): Promise<void> {
@@ -79,9 +73,7 @@ export default class CommentRepositoryPostgres extends CommentRepository {
       values: [commentId],
     };
 
-    const { rowCount } = await this.#pool.query(query);
-
-    if (!rowCount) throw new NotFoundError('comment not found');
+    await this.#pool.query(query);
   }
 
   async hasThreadOf(threadId: string) {

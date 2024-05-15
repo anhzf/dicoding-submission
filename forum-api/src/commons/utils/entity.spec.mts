@@ -1,5 +1,5 @@
 import { object, string } from 'valibot';
-import { createEntityValidator } from '../entity.mjs';
+import { createEntityValidator } from './entity.mjs';
 
 describe('Entity utilities', () => {
   describe('createEntityValidator()', () => {
@@ -12,11 +12,11 @@ describe('Entity utilities', () => {
       });
       const input = { id: 'id-123' };
 
-      const validator = createEntityValidator(entityName, schema);
+      const validate = createEntityValidator(entityName, schema);
 
       // Action & Assert
       // @ts-expect-error
-      expect(() => validator(input)).toThrow(`${entityName}.NOT_CONTAIN_NEEDED_PROPERTY`);
+      expect(() => validate(input)).toThrow(`${entityName}.NOT_CONTAIN_NEEDED_PROPERTY`);
     });
 
     it('should return parsed input when input contain needed property', () => {
