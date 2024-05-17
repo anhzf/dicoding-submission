@@ -7,7 +7,7 @@ describe('AddedComment entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new AddedComment(payload)).toThrowError(
+    expect(() => new AddedComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -20,7 +20,9 @@ describe('AddedComment entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new AddedComment(payload)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new AddedComment(payload)).toThrow(
+      'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'
+    );
   });
 
   it('should correctly', () => {

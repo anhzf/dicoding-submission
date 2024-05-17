@@ -31,7 +31,7 @@ describe('UserRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(userRepositoryPostgres.verifyUsername(username)).rejects
-        .toThrowError(InvariantError);
+        .toThrow(InvariantError);
     });
 
     it('should not throw InvariantError when username available', async () => {
@@ -40,7 +40,7 @@ describe('UserRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(userRepositoryPostgres.verifyUsername('dicoding')).resolves
-        .not.toThrowError(InvariantError);
+        .not.toThrow(InvariantError);
     });
   });
 
@@ -90,7 +90,7 @@ describe('UserRepositoryPostgres', () => {
       // Action & Assert
       return expect(userRepositoryPostgres.getPasswordByUsername(username))
         .rejects
-        .toThrowError(InvariantError);
+        .toThrow(InvariantError);
     });
 
     it('should return username password when user is found', async () => {
@@ -115,7 +115,7 @@ describe('UserRepositoryPostgres', () => {
       // Action & Assert
       await expect(userRepositoryPostgres.getIdByUsername(username))
         .rejects
-        .toThrowError(InvariantError);
+        .toThrow(InvariantError);
     });
 
     it('should return user id correctly', async () => {

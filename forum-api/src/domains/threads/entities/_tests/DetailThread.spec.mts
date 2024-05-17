@@ -5,7 +5,7 @@ describe('DetailThread entities', () => {
     const payload = {};
     //   Action and assert
     // @ts-expect-error
-    expect(() => new DetailThread(payload)).toThrowError(
+    expect(() => new DetailThread(payload)).toThrow(
       'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -22,7 +22,7 @@ describe('DetailThread entities', () => {
 
     //   Action and assert
     // @ts-expect-error
-    expect(() => new DetailThread(payload)).toThrowError(
+    expect(() => new DetailThread(payload)).toThrow(
       'THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

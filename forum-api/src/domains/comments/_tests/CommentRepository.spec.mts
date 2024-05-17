@@ -8,7 +8,9 @@ describe('comment repository interface', () => {
 
     // Act & Assert
     expect(commentRepository.insert).toBeUndefined();
+    expect(commentRepository.isExist).toBeUndefined();
     expect(commentRepository.isOwned).toBeUndefined();
     expect(commentRepository.destroy).toBeUndefined();
+    expect(commentRepository.hasThreadOf).toBeUndefined();
   });
 });

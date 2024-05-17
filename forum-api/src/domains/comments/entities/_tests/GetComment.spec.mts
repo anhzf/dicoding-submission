@@ -7,7 +7,7 @@ describe('GetComment entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new GetComment(payload)).toThrowError(
+    expect(() => new GetComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -22,7 +22,7 @@ describe('GetComment entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new GetComment(payload)).toThrowError(
+    expect(() => new GetComment(payload)).toThrow(
       'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

@@ -28,14 +28,19 @@ describe('GetAuthenticationUseCase', () => {
     // Mocking
     mockUserRepository.getPasswordByUsername = vitest.fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'));
+
     mockPasswordHash.compare = vitest.fn()
       .mockImplementation(() => Promise.resolve());
+
     mockAuthenticationTokenManager.createAccessToken = vitest.fn()
       .mockImplementation(() => Promise.resolve(mockedAuthentication.accessToken));
+
     mockAuthenticationTokenManager.createRefreshToken = vitest.fn()
       .mockImplementation(() => Promise.resolve(mockedAuthentication.refreshToken));
+
     mockUserRepository.getIdByUsername = vitest.fn()
       .mockImplementation(() => Promise.resolve('user-123'));
+
     mockAuthenticationRepository.addToken = vitest.fn()
       .mockImplementation(() => Promise.resolve());
 

@@ -7,7 +7,7 @@ describe('InsertComment Entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new InsertComment(payload)).toThrowError(
+    expect(() => new InsertComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -21,7 +21,7 @@ describe('InsertComment Entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new InsertComment(payload)).toThrowError(
+    expect(() => new InsertComment(payload)).toThrow(
       'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

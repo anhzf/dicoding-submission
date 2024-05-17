@@ -8,7 +8,7 @@ describe('DeleteComment entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new DeleteComment(payload)).toThrowError(
+    expect(() => new DeleteComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -21,7 +21,7 @@ describe('DeleteComment entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new DeleteComment(payload)).toThrowError(
+    expect(() => new DeleteComment(payload)).toThrow(
       'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

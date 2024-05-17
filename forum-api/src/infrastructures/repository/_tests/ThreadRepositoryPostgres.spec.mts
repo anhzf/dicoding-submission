@@ -68,7 +68,7 @@ describe('ThreadRepositoryPostgres', () => {
       const result = threadRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result).resolves.not.toThrow();
     });
 
     it('should throws NotFoundError if thread does not exist', async () => {
@@ -79,7 +79,7 @@ describe('ThreadRepositoryPostgres', () => {
       const result = threadRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).rejects.toThrowError(NotFoundError);
+      await expect(result).rejects.toThrow(NotFoundError);
     });
   });
 
@@ -109,7 +109,7 @@ describe('ThreadRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(threadRepositoryPostgres.get(id))
-        .rejects.toThrowError(NotFoundError);
+        .rejects.toThrow(NotFoundError);
     });
   });
 });

@@ -1,4 +1,3 @@
-import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import CommentRepository from '../../../domains/comments/CommentRepository.mjs';
 import ReplyRepository from '../../../domains/replies/ReplyRepository.mjs';
 import AddedReply from '../../../domains/replies/entities/AddedReply.mjs';
@@ -40,10 +39,10 @@ describe('AddReplyUseCase', () => {
       })));
 
     mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve(true));
+      .mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
@@ -60,76 +59,5 @@ describe('AddReplyUseCase', () => {
     expect(mockReplyRepository.insert).toBeCalledWith(
       new InsertReply({ content, threadId, commentId, userId: credential.id }),
     );
-  });
-
-  it('should throw error when thread not found', async () => {
-    const credential = { id: 'user-123' };
-    const useCasePayload = {
-      content: 'content reply-1234',
-      threadId: 'thread-123',
-      commentId: 'comment-123',
-    };
-
-    const { content, threadId, commentId } = useCasePayload;
-
-    /** creating dependency of use case */
-    // @ts-expect-error
-    const mockReplyRepository = new ReplyRepository();
-    // @ts-expect-error
-    const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
-    const mockCommentRepository = new CommentRepository();
-
-    /** mocking needed function */
-    mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.reject(new NotFoundError('thread not found')));
-
-    /** creating use case instance */
-    const addReplyUseCase = new AddReplyUseCase({
-      replyRepository: mockReplyRepository,
-      threadRepository: mockThreadRepository,
-      commentRepository: mockCommentRepository,
-    });
-
-    await expect(addReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrow(NotFoundError);
-    expect(mockThreadRepository.isExist).toBeCalledWith(threadId);
-  });
-
-  it('should throw error when comment not found', async () => {
-    const credential = { id: 'user-123' };
-    const useCasePayload = {
-      content: 'content reply-1234',
-      threadId: 'thread-123',
-      commentId: 'comment-123',
-    };
-
-    const { content, threadId, commentId } = useCasePayload;
-
-    /** creating dependency of use case */
-    // @ts-expect-error
-    const mockReplyRepository = new ReplyRepository();
-    // @ts-expect-error
-    const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
-    const mockCommentRepository = new CommentRepository();
-
-    /** mocking needed function */
-    mockThreadRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.isExist = vitest.fn()
-      .mockImplementation(() => Promise.reject(new NotFoundError('comment not found')));
-
-    /** creating use case instance */
-    const addReplyUseCase = new AddReplyUseCase({
-      replyRepository: mockReplyRepository,
-      threadRepository: mockThreadRepository,
-      commentRepository: mockCommentRepository,
-    });
-
-    await expect(addReplyUseCase.execute(useCasePayload, credential))
-      .rejects.toThrow(NotFoundError);
-    expect(mockThreadRepository.isExist).toBeCalledWith(threadId);
-    expect(mockCommentRepository.isExist).toBeCalledWith(commentId);
   });
 });

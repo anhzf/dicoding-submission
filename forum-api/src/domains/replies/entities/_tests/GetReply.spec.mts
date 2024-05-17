@@ -7,7 +7,7 @@ describe('InsertReply entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new InsertReply(payload)).toThrowError(
+    expect(() => new InsertReply(payload)).toThrow(
       'REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -21,7 +21,7 @@ describe('InsertReply entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new InsertReply(payload)).toThrowError(
+    expect(() => new InsertReply(payload)).toThrow(
       'REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );
   });

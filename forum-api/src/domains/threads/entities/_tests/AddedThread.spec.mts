@@ -8,7 +8,7 @@ describe('AddedThread entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new AddedThread(payload)).toThrowError(
+    expect(() => new AddedThread(payload)).toThrow(
       'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -20,7 +20,7 @@ describe('AddedThread entities', () => {
       owner: 123,
     };
     // @ts-expect-error
-    expect(() => new AddedThread(payload)).toThrowError(
+    expect(() => new AddedThread(payload)).toThrow(
       'THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

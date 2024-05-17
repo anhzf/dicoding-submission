@@ -7,7 +7,7 @@ describe('DeleteReply entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new DeleteReply(payload)).toThrowError(
+    expect(() => new DeleteReply(payload)).toThrow(
       'REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -21,7 +21,7 @@ describe('DeleteReply entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new DeleteReply(payload)).toThrowError(
+    expect(() => new DeleteReply(payload)).toThrow(
       'REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );
   });

@@ -5,14 +5,22 @@ import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
 import AuthorizationError from '../../../commons/exceptions/AuthorizationError.mjs';
 import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import DeleteReply from '../../../domains/replies/entities/DeleteReply.mjs';
+import GetReply from '../../../domains/replies/entities/GetReply.mjs';
 import InsertReply from '../../../domains/replies/entities/InsertReply.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import ReplyRepositoryPostgres from '../ReplyRepositoryPostgres.mjs';
 
 describe('ReplyRepositoryPostgres', async () => {
+  const USER = {
+    id: 'user-123',
+    username: '',
+    fullname: '',
+    password: '',
+  };
+
   const REPLY = Object.freeze({
     id: 'reply-123',
-    userId: 'user-123',
+    userId: USER.id,
     threadId: 'thread-123',
     commentId: 'comment-123',
     content: 'Hello, there!',
@@ -21,7 +29,7 @@ describe('ReplyRepositoryPostgres', async () => {
   const { id, userId, threadId, commentId, content } = REPLY;
 
   beforeEach(async () => {
-    await UsersTableTestHelper.add({ id: userId });
+    Object.assign(USER, await UsersTableTestHelper.add({ id: userId }));
     await ThreadsTableTestHelper.add({ id: threadId, owner: userId });
     await CommentsTableTestHelper.add({ id: commentId, userId, threadId });
   });
@@ -86,14 +94,20 @@ describe('ReplyRepositoryPostgres', async () => {
     it('should return replies of comments correctly', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => '123');
-      await RepliesTableTestHelper.add(REPLY);
+      const reply = await RepliesTableTestHelper.add(REPLY);
 
       // Action
       const replies = await replyRepositoryPostgres.hasCommentOf(commentId);
 
       // Assert
       expect(replies).toHaveLength(1);
-      expect(replies[0].id).toEqual(id);
+      expect(replies[0]).toStrictEqual(new GetReply({
+        id,
+        username: USER.username,
+        content: reply.content,
+        date: reply.date,
+        deletedAt: null,
+      }));
     });
   });
 
@@ -107,7 +121,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result).resolves.not.toThrow();
     });
 
     it('should throws NotFoundError when reply is not exist', async () => {
@@ -118,7 +132,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).rejects.toThrowError(NotFoundError);
+      await expect(result).rejects.toThrow(NotFoundError);
     });
   });
 
@@ -132,7 +146,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isOwned(id, userId);
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result).resolves.not.toThrow();
     });
 
     it('should throws AuthorizationError when reply is not owned by user', async () => {
@@ -144,7 +158,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isOwned(id, 'user-321');
 
       // Assert
-      await expect(result).rejects.toThrowError(AuthorizationError);
+      await expect(result).rejects.toThrow(AuthorizationError);
     });
   });
 });

@@ -2,7 +2,7 @@ import containerRegistry from './container-registry.mjs';
 
 describe('container-registry', () => {
   it('should throw error when service not registered', () => {
-    expect(() => containerRegistry.get('passwordHash')).toThrowError(
+    expect(() => containerRegistry.get('passwordHash')).toThrow(
       'Service passwordHash not registered',
     );
   });

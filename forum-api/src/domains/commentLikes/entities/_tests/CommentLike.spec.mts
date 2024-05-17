@@ -7,7 +7,7 @@ describe('CommentLike entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new CommentLike(payload)).toThrowError(
+    expect(() => new CommentLike(payload)).toThrow(
       'COMMENT_LIKE.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -19,7 +19,7 @@ describe('CommentLike entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new CommentLike(payload)).toThrowError(
+    expect(() => new CommentLike(payload)).toThrow(
       'COMMENT_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );
   });

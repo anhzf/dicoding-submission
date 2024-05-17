@@ -4,22 +4,30 @@ import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.mjs';
 import AuthorizationError from '../../../commons/exceptions/AuthorizationError.mjs';
 import NotFoundError from '../../../commons/exceptions/NotFoundError.mjs';
 import DeleteComment from '../../../domains/comments/entities/DeleteComment.mjs';
+import GetComment from '../../../domains/comments/entities/GetComment.mjs';
 import InsertComment from '../../../domains/comments/entities/InsertComment.mjs';
 import pool from '../../database/postgres/pool.mjs';
 import CommentRepositoryPostgres from '../CommentRepositoryPostgres.mjs';
 
 describe('CommentRepositoryPostgres', () => {
+  const USER = {
+    id: 'user-123',
+    username: '',
+    fullname: '',
+    password: '',
+  };
+
   const COMMENT = Object.freeze({
     id: 'comment-123',
     content: 'content',
-    userId: 'user-123',
+    userId: USER.id,
     threadId: 'thread-123',
   });
 
   const { id, content, userId, threadId } = COMMENT;
 
   beforeEach(async () => {
-    await UsersTableTestHelper.add({ id: userId });
+    Object.assign(USER, await UsersTableTestHelper.add({ id: userId }));
     await ThreadsTableTestHelper.add({ id: threadId, owner: userId });
   });
 
@@ -65,7 +73,7 @@ describe('CommentRepositoryPostgres', () => {
       const result = commentRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result).resolves.not.toThrow(NotFoundError);
     });
 
     it('should throws NotFoundError if comment does not exist', async () => {
@@ -76,7 +84,7 @@ describe('CommentRepositoryPostgres', () => {
       const result = commentRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).rejects.toThrowError(NotFoundError);
+      await expect(result).rejects.toThrow(NotFoundError);
     });
   });
 
@@ -90,7 +98,7 @@ describe('CommentRepositoryPostgres', () => {
       const result = commentRepositoryPostgres.isOwned(id, userId);
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result).resolves.not.toThrow(AuthorizationError);
     });
 
     it('should throws AuthorizationError if comment is not owned by user', async () => {
@@ -102,7 +110,7 @@ describe('CommentRepositoryPostgres', () => {
       const result = commentRepositoryPostgres.isOwned(id, 'user-456');
 
       // Assert
-      await expect(result).rejects.toThrowError(AuthorizationError);
+      await expect(result).rejects.toThrow(AuthorizationError);
     });
   });
 
@@ -130,14 +138,20 @@ describe('CommentRepositoryPostgres', () => {
     it('should return comments of thread correctly', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => '123');
-      await CommentsTableTestHelper.add(COMMENT);
+      const comment = await CommentsTableTestHelper.add(COMMENT);
 
       // Action
       const comments = await commentRepositoryPostgres.hasThreadOf(threadId);
 
       // Assert
       expect(comments).toHaveLength(1);
-      expect(comments[0].id).toEqual(id);
+      expect(comments[0]).toStrictEqual(new GetComment({
+        id,
+        content,
+        username: USER.username,
+        date: comment.date,
+        deletedAt: null,
+      }));
     });
   });
 })

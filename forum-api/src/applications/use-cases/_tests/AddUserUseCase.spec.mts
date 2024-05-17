@@ -25,8 +25,10 @@ describe('AddUserUseCase', () => {
     /** mocking needed function */
     mockUserRepository.verifyUsername = vitest.fn()
       .mockImplementation(() => Promise.resolve());
+
     mockPasswordHash.hash = vitest.fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'));
+
     mockUserRepository.create = vitest.fn()
       .mockImplementation(() => Promise.resolve(new RegisteredUser({
         id: 'user-123',

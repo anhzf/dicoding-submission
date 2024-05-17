@@ -6,7 +6,7 @@ describe('InsertThread entities', () => {
 
     //   Action and assert
     // @ts-expect-error
-    expect(() => new InsertThread(payload)).toThrowError(
+    expect(() => new InsertThread(payload)).toThrow(
       'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -19,7 +19,7 @@ describe('InsertThread entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new InsertThread(payload)).toThrowError(
+    expect(() => new InsertThread(payload)).toThrow(
       'THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });

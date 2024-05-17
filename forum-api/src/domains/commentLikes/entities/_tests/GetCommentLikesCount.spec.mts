@@ -7,7 +7,7 @@ describe('GetCommentLikesCount entities', () => {
 
     // Action and assert
     // @ts-expect-error
-    expect(() => new GetCommentLikesCount(payload)).toThrowError(
+    expect(() => new GetCommentLikesCount(payload)).toThrow(
       'COMMENT_LIKE.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
@@ -19,7 +19,7 @@ describe('GetCommentLikesCount entities', () => {
     };
 
     // @ts-expect-error
-    expect(() => new GetCommentLikesCount(payload)).toThrowError(
+    expect(() => new GetCommentLikesCount(payload)).toThrow(
       'COMMENT_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );
   });

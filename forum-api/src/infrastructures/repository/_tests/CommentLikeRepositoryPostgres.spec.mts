@@ -49,7 +49,8 @@ describe('CommentLikeRepositoryPostgres', () => {
       const result = commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
 
       // Assert
-      await expect(result).resolves.not.toThrowError();
+      await expect(result)
+        .resolves.not.toThrow();
     });
 
     it('should throws NotFoundError if comment like does not exist', async () => {
@@ -60,7 +61,7 @@ describe('CommentLikeRepositoryPostgres', () => {
       const result = commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
 
       // Assert
-      await expect(result).rejects.toThrowError(NotFoundError);
+      await expect(result).rejects.toThrow(NotFoundError);
     });
   });
 
@@ -74,7 +75,7 @@ describe('CommentLikeRepositoryPostgres', () => {
 
       // Assert
       await expect(commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE)))
-        .resolves.not.toThrowError();
+        .resolves.not.toThrow();
     });
   });
 
@@ -89,7 +90,7 @@ describe('CommentLikeRepositoryPostgres', () => {
 
       // Assert
       await expect(commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE)))
-        .rejects.toThrowError(NotFoundError);
+        .rejects.toThrow(NotFoundError);
     });
   });
 
