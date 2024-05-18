@@ -49,8 +49,7 @@ describe('CommentLikeRepositoryPostgres', () => {
       const result = commentLikeRepositoryPostgres.isExist(new CommentLike(COMMENT_LIKE));
 
       // Assert
-      await expect(result)
-        .resolves.not.toThrow();
+      await expect(result).resolves.not.toThrow(NotFoundError);
     });
 
     it('should throws NotFoundError if comment like does not exist', async () => {

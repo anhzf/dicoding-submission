@@ -101,13 +101,13 @@ describe('ReplyRepositoryPostgres', async () => {
 
       // Assert
       expect(replies).toHaveLength(1);
-      expect(replies[0]).toStrictEqual(new GetReply({
+      expect(replies).toStrictEqual([new GetReply({
         id,
         username: USER.username,
         content: reply.content,
         date: reply.date,
         deletedAt: null,
-      }));
+      })]);
     });
   });
 
@@ -121,7 +121,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).resolves.not.toThrow();
+      await expect(result).resolves.not.toThrow(NotFoundError);
     });
 
     it('should throws NotFoundError when reply is not exist', async () => {
@@ -146,7 +146,7 @@ describe('ReplyRepositoryPostgres', async () => {
       const result = replyRepositoryPostgres.isOwned(id, userId);
 
       // Assert
-      await expect(result).resolves.not.toThrow();
+      await expect(result).resolves.not.toThrow(AuthorizationError);
     });
 
     it('should throws AuthorizationError when reply is not owned by user', async () => {

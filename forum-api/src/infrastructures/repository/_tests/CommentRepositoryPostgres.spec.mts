@@ -145,13 +145,13 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comments).toHaveLength(1);
-      expect(comments[0]).toStrictEqual(new GetComment({
+      expect(comments).toStrictEqual([new GetComment({
         id,
         content,
         username: USER.username,
         date: comment.date,
         deletedAt: null,
-      }));
+      })]);
     });
   });
 })

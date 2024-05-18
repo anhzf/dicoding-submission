@@ -68,7 +68,7 @@ describe('ThreadRepositoryPostgres', () => {
       const result = threadRepositoryPostgres.isExist(id);
 
       // Assert
-      await expect(result).resolves.not.toThrow();
+      await expect(result).resolves.not.toThrow(NotFoundError);
     });
 
     it('should throws NotFoundError if thread does not exist', async () => {
