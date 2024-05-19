@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import 'dotenv/config';
 import container from './infrastructures/container.mjs';
 import createServer from './infrastructures/http/createServer.mjs';
@@ -8,3 +9,4 @@ import createServer from './infrastructures/http/createServer.mjs';
 
   console.log(`server start at ${server.info.uri}`);
 })();
+/* c8 ignore stop */
