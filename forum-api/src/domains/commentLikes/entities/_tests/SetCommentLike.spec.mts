@@ -6,7 +6,7 @@ describe('SetCommentLike entities', () => {
     const payload = {};
 
     // Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new SetCommentLike(payload)).toThrow(
       'COMMENT_LIKE.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -18,7 +18,7 @@ describe('SetCommentLike entities', () => {
       userId: 123,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new SetCommentLike(payload)).toThrow(
       'COMMENT_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );

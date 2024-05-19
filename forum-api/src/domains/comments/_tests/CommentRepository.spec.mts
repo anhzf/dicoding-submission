@@ -3,7 +3,7 @@ import CommentRepository from '../CommentRepository.mjs';
 describe('comment repository interface', () => {
   it('should throw error when invoke abstract behavior', async () => {
     // Arrange
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const commentRepository = new CommentRepository();
 
     // Act & Assert

@@ -17,9 +17,9 @@ describe('AddUserUseCase', () => {
     };
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockUserRepository = new UserRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockPasswordHash = new PasswordHash();
 
     /** mocking needed function */

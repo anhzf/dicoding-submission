@@ -3,7 +3,7 @@ import createServer from '../createServer.mjs';
 describe('HTTP server', () => {
   it('should response 404 when request unregistered route', async () => {
     // Arrange
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const server = await createServer({});
 
     // Action
@@ -24,7 +24,7 @@ describe('HTTP server', () => {
       fullname: 'Dicoding Indonesia',
       password: 'super_secret',
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const server = await createServer({}); // fake injection
 
     // Action
@@ -50,7 +50,7 @@ describe('HTTP server', () => {
       fullname: 'Dicoding Indonesia',
       password: 'super_secret',
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const server = await createServer({}); // fake injection
 
     // Action
@@ -70,7 +70,7 @@ describe('HTTP server', () => {
 
   it('has a welcome message', async () => {
     // Arrange
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const server = await createServer({});
 
     // Action

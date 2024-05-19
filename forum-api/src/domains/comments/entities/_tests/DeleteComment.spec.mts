@@ -7,7 +7,7 @@ describe('DeleteComment entities', () => {
       commentId: '',
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new DeleteComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -20,7 +20,7 @@ describe('DeleteComment entities', () => {
       ownerId: true,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new DeleteComment(payload)).toThrow(
       'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );

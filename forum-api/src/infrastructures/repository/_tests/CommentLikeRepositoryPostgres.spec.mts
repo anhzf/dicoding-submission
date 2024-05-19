@@ -82,7 +82,7 @@ describe('CommentLikeRepositoryPostgres', () => {
     it('should persist unset comment like', async () => {
       // Arrange
       const commentLikeRepositoryPostgres = new CommentLikeRepositoryPostgres(pool, idGenerator);
-      const added = await CommentLikesTableTestHelper.add(COMMENT_LIKE);
+      await CommentLikesTableTestHelper.add(COMMENT_LIKE);
 
       // Action
       await commentLikeRepositoryPostgres.unset(new SetCommentLike(COMMENT_LIKE));

@@ -6,7 +6,7 @@ describe('GetCommentLikesCount entities', () => {
     const payload = {};
 
     // Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new GetCommentLikesCount(payload)).toThrow(
       'COMMENT_LIKE.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -18,7 +18,7 @@ describe('GetCommentLikesCount entities', () => {
       count: '123',
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new GetCommentLikesCount(payload)).toThrow(
       'COMMENT_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );

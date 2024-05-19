@@ -11,6 +11,7 @@ export default class RepliesHandler {
   async post(request: Request, h: ResponseToolkit) {
     const credential = request.auth.credentials;
     const { threadId, commentId } = request.params;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { content } = request.payload as any;
 
     const action = this.#container.get('addReplyUseCase');
@@ -18,6 +19,7 @@ export default class RepliesHandler {
       threadId,
       commentId,
       content,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, credential as any);
 
     return h.response({
@@ -38,6 +40,7 @@ export default class RepliesHandler {
       id: replyId,
       threadId,
       commentId,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, credential as any);
 
     return h.response({

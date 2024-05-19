@@ -6,7 +6,7 @@ describe('InsertReply entities', () => {
     const payload = {};
 
     // Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new InsertReply(payload)).toThrow(
       'REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -20,7 +20,7 @@ describe('InsertReply entities', () => {
       commentId: 123,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new InsertReply(payload)).toThrow(
       'REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );

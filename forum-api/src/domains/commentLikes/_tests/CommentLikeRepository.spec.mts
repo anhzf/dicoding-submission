@@ -3,7 +3,7 @@ import CommentLikeRepository from '../CommentLikeRepository.mjs';
 describe('comment like repository interface', () => {
   it('should throw error when invoke abstract behavior', async () => {
     // Arrange
-    // @ts-expect-error
+    // @ts-expect-error commentLikeRepository cannot be instantiated
     const commentLikeRepository = new CommentLikeRepository();
 
     // Act & Assert

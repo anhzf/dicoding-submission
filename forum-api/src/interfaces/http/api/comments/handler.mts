@@ -13,6 +13,7 @@ export default class CommentsHandler {
     const { threadId } = request.params;
 
     const payload = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       content: (request.payload as any).content,
       threadId,
       ownerId: credential.id as string,
@@ -39,6 +40,7 @@ export default class CommentsHandler {
 
   async destroy(request: Request) {
     const { threadId, commentId } = request.params;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: ownerId } = request.auth.credentials as any;
 
     const deleteComment = this.#container.get('deleteCommentUseCase');

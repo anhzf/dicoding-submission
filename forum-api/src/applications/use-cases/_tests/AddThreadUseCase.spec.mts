@@ -22,7 +22,7 @@ describe('AddThreadUseCase', () => {
     const { body } = useCasePayload;
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
 
     /** mocking needed function */

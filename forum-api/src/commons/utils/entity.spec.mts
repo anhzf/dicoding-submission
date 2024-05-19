@@ -15,7 +15,7 @@ describe('Entity utilities', () => {
       const validate = createEntityValidator(entityName, schema);
 
       // Action & Assert
-      // @ts-expect-error
+      // @ts-expect-error for testing purpose
       expect(() => validate(input)).toThrow(`${entityName}.NOT_CONTAIN_NEEDED_PROPERTY`);
     });
 

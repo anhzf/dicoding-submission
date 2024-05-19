@@ -26,11 +26,11 @@ describe('ToggleCommentLikeUseCase', () => {
     });
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
@@ -86,11 +86,11 @@ describe('ToggleCommentLikeUseCase', () => {
     });
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
@@ -129,11 +129,11 @@ describe('ToggleCommentLikeUseCase', () => {
     };
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
@@ -163,11 +163,11 @@ describe('ToggleCommentLikeUseCase', () => {
     };
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
@@ -200,11 +200,11 @@ describe('ToggleCommentLikeUseCase', () => {
     };
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */

@@ -23,11 +23,11 @@ describe('AddReplyUseCase', () => {
     const { content, threadId, commentId } = useCasePayload;
 
     /** creating dependency of use case */
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockReplyRepository = new ReplyRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */

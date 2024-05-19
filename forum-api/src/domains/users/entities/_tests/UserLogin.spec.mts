@@ -8,7 +8,7 @@ describe('UserLogin entities', () => {
     };
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new UserLogin(payload)).toThrow(
       'USER_LOGIN.NOT_CONTAIN_NEEDED_PROPERTY'
     );
@@ -22,7 +22,7 @@ describe('UserLogin entities', () => {
     };
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new UserLogin(payload)).toThrow(
       'USER_LOGIN.NOT_MEET_DATA_TYPE_SPECIFICATION'
     );

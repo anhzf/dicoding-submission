@@ -3,7 +3,7 @@ import UserRepository from '../UserRepository.mjs';
 describe('UserRepository interface', () => {
   it('should throw error when invoke abstract behavior', async () => {
     // Arrange
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const userRepository = new UserRepository();
 
     // Action and Assert

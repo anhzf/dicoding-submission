@@ -73,13 +73,13 @@ describe('GetDetailThreadUseCase interface', () => {
       ],
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockReplyRepository = new ReplyRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentLikeRepository = new CommentLikeRepository();
 
     mockThreadRepository.get = vitest.fn()

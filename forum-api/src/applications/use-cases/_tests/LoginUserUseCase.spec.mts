@@ -16,13 +16,13 @@ describe('GetAuthenticationUseCase', () => {
       accessToken: 'access_token',
       refreshToken: 'refresh_token',
     });
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockUserRepository = new UserRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockAuthenticationRepository = new AuthenticationRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockPasswordHash = new PasswordHash();
 
     // Mocking

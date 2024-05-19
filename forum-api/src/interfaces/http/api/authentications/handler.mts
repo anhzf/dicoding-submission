@@ -10,6 +10,7 @@ export default class AuthenticationsHandler {
 
   async post(request: Request, h: ResponseToolkit) {
     const loginUserUseCase = this.#container.get('loginUserUseCase');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { accessToken, refreshToken } = await loginUserUseCase.execute(request.payload as any);
     const response = h.response({
       status: 'success',
@@ -24,6 +25,7 @@ export default class AuthenticationsHandler {
 
   async put(request: Request) {
     const refreshAuthenticationUseCase = this.#container.get('refreshAuthenticationUseCase');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const accessToken = await refreshAuthenticationUseCase.execute(request.payload as any);
     return {
       status: 'success',
@@ -35,6 +37,7 @@ export default class AuthenticationsHandler {
 
   async destroy(request: Request) {
     const logoutUserUseCase = this.#container.get('logoutUserUseCase');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await logoutUserUseCase.execute(request.payload as any);
     return {
       status: 'success',

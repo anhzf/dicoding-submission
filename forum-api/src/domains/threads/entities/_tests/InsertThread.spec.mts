@@ -5,7 +5,7 @@ describe('InsertThread entities', () => {
     const payload = {};
 
     //   Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new InsertThread(payload)).toThrow(
       'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -18,7 +18,7 @@ describe('InsertThread entities', () => {
       body: 12323232,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new InsertThread(payload)).toThrow(
       'THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );

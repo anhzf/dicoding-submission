@@ -4,7 +4,7 @@ describe('DetailThread entities', () => {
   it('should throw error when payload did not contain', () => {
     const payload = {};
     //   Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new DetailThread(payload)).toThrow(
       'THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -21,7 +21,7 @@ describe('DetailThread entities', () => {
     };
 
     //   Action and assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new DetailThread(payload)).toThrow(
       'THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );

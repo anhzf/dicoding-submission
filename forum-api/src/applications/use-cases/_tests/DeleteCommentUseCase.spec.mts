@@ -10,9 +10,9 @@ describe('DeleteCommentUseCase', () => {
       ownerId: 'user-123',
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockCommentRepository = new CommentRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.isExist = vitest.fn()

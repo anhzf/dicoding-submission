@@ -5,11 +5,11 @@ describe('DeleteAuthenticationUseCase', () => {
   it('should throw error if use case payload not contain refresh token', async () => {
     // Arrange
     const useCasePayload = {};
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({});
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
       .rejects
       .toThrow('DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN');
@@ -20,11 +20,11 @@ describe('DeleteAuthenticationUseCase', () => {
     const useCasePayload = {
       refreshToken: 123,
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({});
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
       .rejects
       .toThrow('DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
@@ -35,7 +35,7 @@ describe('DeleteAuthenticationUseCase', () => {
     const useCasePayload = {
       refreshToken: 'refreshToken',
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockAuthenticationRepository = new AuthenticationRepository();
     mockAuthenticationRepository.checkTokenAvailability = vitest.fn()
       .mockImplementation(() => Promise.resolve());

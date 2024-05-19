@@ -1,4 +1,3 @@
-import NotFoundError from '../../commons/exceptions/NotFoundError.mjs';
 import type CommentLikeRepository from '../../domains/commentLikes/CommentLikeRepository.mjs';
 import type CommentRepository from '../../domains/comments/CommentRepository.mjs';
 import type ReplyRepository from '../../domains/replies/ReplyRepository.mjs';

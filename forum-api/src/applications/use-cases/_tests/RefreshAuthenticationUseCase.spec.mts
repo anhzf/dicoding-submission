@@ -6,11 +6,11 @@ describe('RefreshAuthenticationUseCase', () => {
   it('should throw error if use case payload not contain refresh token', async () => {
     // Arrange
     const useCasePayload = {};
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const refreshAuthenticationUseCase = new RefreshAuthenticationUseCase({});
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     await expect(refreshAuthenticationUseCase.execute(useCasePayload))
       .rejects
       .toThrow('REFRESH_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN');
@@ -21,11 +21,11 @@ describe('RefreshAuthenticationUseCase', () => {
     const useCasePayload = {
       refreshToken: 1,
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const refreshAuthenticationUseCase = new RefreshAuthenticationUseCase({});
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     await expect(refreshAuthenticationUseCase.execute(useCasePayload))
       .rejects
       .toThrow('REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
@@ -36,9 +36,9 @@ describe('RefreshAuthenticationUseCase', () => {
     const useCasePayload = {
       refreshToken: 'some_refresh_token',
     };
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockAuthenticationRepository = new AuthenticationRepository();
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
     // Mocking
     mockAuthenticationRepository.checkTokenAvailability = vitest.fn()

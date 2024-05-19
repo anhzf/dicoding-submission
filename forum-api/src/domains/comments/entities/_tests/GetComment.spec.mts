@@ -6,7 +6,7 @@ describe('GetComment entities', () => {
       id: 'comment-123',
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new GetComment(payload)).toThrow(
       'COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
@@ -21,7 +21,7 @@ describe('GetComment entities', () => {
       deletedAt: 123,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new GetComment(payload)).toThrow(
       'COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );

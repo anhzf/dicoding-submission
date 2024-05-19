@@ -13,6 +13,7 @@ export default class ThreadsHandler {
     const credential = request.auth.credentials;
 
     const action = this.#container.get('addThreadUseCase');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addedThread = await action.execute(useCasePayload as any, credential as any);
 
     const response = h.response({

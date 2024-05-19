@@ -1,5 +1,6 @@
 import { parse, type Input, type ObjectSchema } from 'valibot';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createEntityValidator = <S extends ObjectSchema<any>>(entityName: string, schema: S) => (
   (input: Input<S>) => {
     const requiredKeys = Object.keys(schema.entries);

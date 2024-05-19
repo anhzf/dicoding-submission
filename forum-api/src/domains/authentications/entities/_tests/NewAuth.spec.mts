@@ -8,7 +8,7 @@ describe('NewAuth entities', () => {
     };
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new NewAuth(payload)).toThrow('NEW_AUTH.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
@@ -20,7 +20,7 @@ describe('NewAuth entities', () => {
     };
 
     // Action & Assert
-    // @ts-expect-error
+    // @ts-expect-error for testing purpose
     expect(() => new NewAuth(payload)).toThrow('NEW_AUTH.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 

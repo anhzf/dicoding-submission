@@ -10,6 +10,7 @@ export default class UsersHandler {
 
   async post(request: Request, h: ResponseToolkit) {
     const addUserUseCase = this.#container.get('addUserUseCase');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addedUser = await addUserUseCase.execute(request.payload as any);
 
     const response = h.response({
